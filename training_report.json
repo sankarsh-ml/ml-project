@@ -678,7 +678,7 @@
     0.5717217482621142,
     0.8086273430493296
   ],
-  "probability_note": "Numerical confidence hidden in the desktop interface: independent sample size 54 and ECE 0.127 do not pass the predeclared n>=100/ECE<=0.12 validation rule. Raw calibrated scores remain available in exports.",
+  "probability_note": "Planet probability has been removed from the interface. Internal calibrated scores still select the class and remain in research CSV exports; independent numerical confidence did not pass the predefined reliability rule.",
   "bootstrap": {
     "resamples": 20,
     "block_minutes": 60,
@@ -686,10 +686,22 @@
   },
   "verification": {
     "unit_tests_passed": 15,
-    "gui_end_to_end": "PASS: real FITS analysis, background worker, selector, classification, bootstrap, three plots, CSV/PNG export.",
+    "gui_end_to_end": "PASS: real FITS analysis, worker queue, editable selector, three measurement cards, bootstrap details, percent/elapsed-time plots, CSV/PNG export; no probability placeholder. Presentation fixtures check catalog disagreement, borderline predictions and insufficient signal.",
     "prediction_reproduction": "PASS: frozen hashes, new star separation, exact independent predictions.",
     "training_feature_reproduction": "All 16 inputs reproduced from fresh FITS analysis for one star per class; all 446 catalog associations validated.",
     "desktop_launch": "PASS: running Python window titled TESS Planet Explorer.",
     "visual_inspection": "Unavailable: Computer Use native pipe could not connect (os error 2)."
+  },
+  "interface": {
+    "measurement_cards": [
+      "orbital_period_days",
+      "transit_duration_hours",
+      "brightness_drop_percent"
+    ],
+    "numerical_probability_displayed": false,
+    "uncertainty_display": "Optional Measurement details dialog; grid-limited zero scatter is explained.",
+    "plots": "Elapsed days and percent brightness/change; no plot toolbar.",
+    "catalog_disagreement": "Plain-language notice when ML prediction conflicts with a known catalog disposition.",
+    "scope": "Presentation only; scientific code, saved model, and independent predictions unchanged."
   }
 }

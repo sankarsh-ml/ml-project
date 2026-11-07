@@ -10,7 +10,7 @@ from tkinter import ttk, filedialog, messagebox
 import joblib
 import numpy as np
 import pandas as pd
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
 from tess_pipeline import ROOT, CONFIG, analyze, download_tic
@@ -54,7 +54,7 @@ class Explorer(tk.Tk):
                  font=("Segoe UI", 12, "bold")).pack(anchor="w")
         tk.Label(header, text="Find the signal in starlight.", bg=BG, fg=TEXT,
                  font=("Segoe UI", 25, "bold")).pack(anchor="w")
-        tk.Label(header, text="On-demand archive analysis  /  Two-minute TESS light curves  /  BLS + Random Forest",
+        tk.Label(header, text="Choose a star to look for repeating dips in its brightness.",
                  bg=BG, fg=MUTED, font=("Segoe UI", 10)).pack(anchor="w", pady=(4, 0))
 
         body = tk.Frame(self, bg=BG)
@@ -83,11 +83,10 @@ class Explorer(tk.Tk):
         self.example_button.pack(fill="x", pady=(0, 8))
         self.export_button = ttk.Button(side, text="Export result…", command=self.export, state="disabled")
         self.export_button.pack(fill="x", pady=(0, 10))
-        self.label(side, "SIGNAL VETTING", ACCENT, 11, True)
-        selected_name = self.report.get("selected_model", "Local classifier")
-        self.label(side, selected_name, TEXT, 11)
-        ttk.Button(side, text="View methodology / evaluation", command=self.evaluation).pack(fill="x", pady=8)
-        self.label(side, "Experimental model\nA candidate score is not\nconfirmation of a planet.", MUTED, 9)
+        self.details_button = ttk.Button(side, text="Measurement details", command=self.show_details, state="disabled")
+        self.details_button.pack(fill="x", pady=(0, 8))
+        ttk.Button(side, text="About the model", command=self.evaluation).pack(fill="x", pady=(0, 12))
+        self.label(side, "Experimental prediction.\nFollow-up is needed to\nconfirm a planet.", MUTED, 9)
 
         main = tk.Frame(body, bg=BG)
         main.pack(side="left", fill="both", expand=True)
@@ -100,7 +99,9 @@ class Explorer(tk.Tk):
         cards = tk.Frame(main, bg=BG)
         cards.pack(fill="x", pady=(0, 10))
         self.values = []
-        for title in ["PERIOD / DAYS", "DURATION / HOURS", "DEPTH / PPM", "PLANET PROBABILITY"]:
+        for title, hint in [("ORBITAL PERIOD", "Time between repeating dips"),
+                            ("TRANSIT DURATION", "How long each dip lasts"),
+                            ("BRIGHTNESS DROP", "Light blocked during the dip")]:
             card = tk.Frame(cards, bg=PANEL, padx=12, pady=10)
             card.pack(side="left", fill="x", expand=True, padx=(0, 6))
             tk.Label(card, text=title, bg=PANEL, fg=MUTED, font=("Segoe UI", 8)).pack(anchor="w")
@@ -108,6 +109,8 @@ class Explorer(tk.Tk):
             self.values.append(variable)
             tk.Label(card, textvariable=variable, bg=PANEL, fg=TEXT,
                      font=("Segoe UI", 18, "bold")).pack(anchor="w")
+            tk.Label(card, text=hint, bg=PANEL, fg=MUTED,
+                     font=("Segoe UI", 8)).pack(anchor="w", pady=(3, 0))
 
         self.figure = Figure(figsize=(8.5, 5.7), facecolor=BG)
         self.axes = self.figure.subplots(3, 1)
@@ -115,16 +118,13 @@ class Explorer(tk.Tk):
         self.style_axes()
         self.canvas = FigureCanvasTkAgg(self.figure, master=main)
         self.canvas.get_tk_widget().pack(fill="both", expand=True)
-        toolbar = NavigationToolbar2Tk(self.canvas, main, pack_toolbar=False)
-        toolbar.update()
-        toolbar.pack(side="bottom", fill="x", before=self.canvas.get_tk_widget())
         self.canvas.draw()
 
         footer = tk.Frame(self, bg=BG)
         footer.pack(side="bottom", fill="x", padx=24, pady=12, before=body)
         self.progress = ttk.Progressbar(footer, mode="indeterminate", length=150)
         self.progress.pack(side="right")
-        self.status = tk.StringVar(value="Ready. Internet is required only for uncached downloads.")
+        self.status = tk.StringVar(value="Ready. Choose a star and select Analyze TIC.")
         tk.Label(footer, textvariable=self.status, bg=BG, fg=MUTED,
                  font=("Segoe UI", 10), anchor="w").pack(side="left", fill="x")
         self.after(100, self.poll)
@@ -136,13 +136,16 @@ class Explorer(tk.Tk):
         return label
 
     def style_axes(self):
-        for ax, title, xlabel in zip(self.axes,
-                ["Flattened starlight · highlighted transit windows", "Folded transit · binned profile", "BLS period search"],
-                ["Time / BTJD (days)", "Time from transit center / hours", "Trial period / days"]):
+        for ax, title, xlabel, ylabel in zip(self.axes,
+                ["Brightness over time - highlighted dips", "Repeating dips aligned", "Transit period search (BLS)"],
+                ["Days since observation started", "Hours from the middle of a dip", "Repeating period (days)"],
+                ["Brightness (%)", "Change (%)", "Signal strength"]):
             ax.set_facecolor(PANEL)
             ax.set_title(title, color=TEXT, fontsize=10, loc="left", pad=8)
             ax.set_xlabel(xlabel, color=MUTED, fontsize=8)
+            ax.set_ylabel(ylabel, color=MUTED, fontsize=8)
             ax.tick_params(colors=MUTED, labelsize=8)
+            ax.ticklabel_format(axis="y", style="plain", useOffset=False)
             for spine in ax.spines.values():
                 spine.set_color("#34455e")
             ax.grid(alpha=0.08, color="white")
@@ -159,9 +162,9 @@ class Explorer(tk.Tk):
             self.sector.set(str(sectors[0]))
         if record:
             from target_selector import STATUS
-            statuses = ", ".join(STATUS.get(code, code) for code in sorted(record["statuses"])) or "Downloaded target"
-            listed = ", ".join(map(str, sectors[:8]))+("…" if len(sectors) > 8 else "")
-            self.target_hint.set("Catalog: "+statuses+"\n"+("Available sectors: "+listed if sectors else "Choose a sector to search."))
+            statuses = ", ".join(sorted({STATUS.get(code, code).split(" (")[0] for code in record["statuses"]})) or "Downloaded target"
+            self.target_hint.set("Catalog: "+statuses)
+
         else:
             self.target_hint.set("New TIC ID — choose a sector to search.")
 
@@ -196,7 +199,7 @@ class Explorer(tk.Tk):
             messagebox.showerror("Model missing", "Run python train_real_tess.py --stage fit first.")
             return
         self.busy = True
-        for button in [self.analyze_button, self.file_button, self.example_button, self.export_button]:
+        for button in [self.analyze_button, self.file_button, self.example_button, self.export_button, self.details_button]:
             button.configure(state="disabled")
         self.result = None
         self.verdict.set("Analyzing observation…")
@@ -253,6 +256,7 @@ class Explorer(tk.Tk):
                         self.result = value
                         self.render(value)
                         self.export_button.configure(state="normal")
+                        self.details_button.configure(state="normal")
         except queue.Empty:
             pass
         self.after(100, self.poll)
@@ -266,47 +270,75 @@ class Explorer(tk.Tk):
         else:
             self.verdict.set("Planet-like candidate" if row.predicted_label else "False-positive-like signal")
         self.target_index.add_observation(f["tic_id"], f["sector"])
-        membership = "New star relative to this model"
-        if f["tic_id"] in self.report.get("train_tic_ids", []):
-            membership = "Training star — this result is not an independent test"
-        elif f["tic_id"] in self.report.get("test_tic_ids", []):
-            membership = "Held-out evaluation star"
-        threshold = result.get("threshold", self.report.get("threshold", 0.5))
-        uncertain = " · Near decision threshold" if abs(probability - threshold) < 0.05 else ""
+        description = f"TIC {f['tic_id']} | Sector {f['sector']} | {f['observed_transits']} dips checked"
+        notices = []
+        threshold = result.get("threshold", .5)
+        if np.isfinite(probability) and abs(probability-threshold) < .05:
+            notices.append("Borderline prediction; review with care.")
+        record = self.target_index.get(f["tic_id"])
+        statuses = record["statuses"] if record else set()
+        if (row.predicted_label == 0 and statuses & {"CP", "KP"}) or (row.predicted_label == 1 and "FP" in statuses):
+            notices.append("This prediction disagrees with the catalog.")
         if result.get("outside_training_range"):
-            uncertain += " · Outside training feature range"
-        self.detail.set(f"TIC {f['tic_id']} · Sector {f['sector']} · {f['observed_transits']} sampled transit windows\n{membership}{uncertain}. Experimental model; follow-up is required.")
-        uncertainty = result.get("uncertainty", {}).get("std", {})
-        if uncertainty:
-            self.detail.set(self.detail.get()+f"\nBootstrap scatter: P {uncertainty['period_days']:.5f} d; duration {uncertainty['duration_days']*24:.3f} h; depth {uncertainty['depth']*1e6:.0f} ppm (local fit only).")
-        probability_text = f"{probability:.1%}" if bool(row.probability_reliable) and not result.get("outside_training_range") else "Not validated"
-        for variable, value in zip(self.values, [f"{f['period_days']:.4f}",
-                f"{f['duration_days']*24:.2f}", f"{f['depth']*1e6:,.0f}", probability_text]):
+            notices.append("Unusual signal for this model; review with care.")
+        if notices:
+            description += "\n"+" ".join(notices)
+        self.detail.set(description)
+        for variable, value in zip(self.values, [f"{f['period_days']:.4f} days",
+                f"{f['duration_days']*24:.2f} hours", f"{f['depth']*100:.4f}%"]):
             variable.set(value)
         for ax in self.axes:
             ax.clear()
         self.style_axes()
         t, flux, phase = result["time"], result["flux"], result["phase"]
         in_transit = np.abs(phase) < f["duration_days"] / 2
-        self.axes[0].scatter(t, flux, s=1, color="#779ac7", alpha=0.55, rasterized=True)
-        self.axes[0].scatter(t[in_transit], flux[in_transit], s=3, color=ACCENT)
+        self.axes[0].scatter(t-t[0], flux*100, s=1, color="#779ac7", alpha=0.55, rasterized=True)
+        self.axes[0].scatter(t[in_transit]-t[0], flux[in_transit]*100, s=3, color=ACCENT)
         limit = min(f["period_days"]/2, max(0.25, f["duration_days"]*2.5))
         visible = np.abs(phase) <= limit
-        self.axes[1].scatter(phase[visible]*24, flux[visible], s=2, color="#779ac7", alpha=0.18)
+        self.axes[1].scatter(phase[visible]*24, (flux[visible]-1)*100, s=2, color="#779ac7", alpha=0.18)
         edges = np.linspace(-limit, limit, 65)
         mids, medians = [], []
         for left, right in zip(edges[:-1], edges[1:]):
             selected = (phase >= left) & (phase < right)
             if selected.any():
                 mids.append((left+right)*12)
-                medians.append(np.median(flux[selected]))
+                medians.append((np.median(flux[selected])-1)*100)
         self.axes[1].plot(mids, medians, ".-", color=ACCENT, markersize=4, linewidth=1)
         self.axes[1].set_xlim(-limit*24, limit*24)
         self.axes[2].plot(result["period_grid"], result["power"], color=ACCENT, linewidth=0.8)
         self.axes[2].axvline(f["period_days"], color="#ffca76", alpha=0.8)
-        self.axes[2].set_ylabel("BLS SNR", color=MUTED, fontsize=8)
         self.canvas.draw_idle()
-        self.status.set("Analysis complete. Export the result or inspect the plots with the toolbar.")
+        self.status.set("Analysis complete. Export result saves the measurements and plots.")
+
+    def measurement_details(self):
+        if not self.result:
+            return "Analyze a star to see its measurements."
+        f = self.result["features"]
+        membership = "Not used to train this model."
+        if f["tic_id"] in self.report.get("train_tic_ids", []):
+            membership = "Used in training; this result is not an independent test."
+        elif f["tic_id"] in self.report.get("test_tic_ids", []):
+            membership = "Part of the independent evaluation set."
+        lines = [f"TIC {f['tic_id']} / Sector {f['sector']}", self.verdict.get(), "",
+            f"Orbital period: {f['period_days']:.6f} days",
+            f"Transit duration: {f['duration_days']*24:.4f} hours",
+            f"Brightness drop: {f['depth']*100:.4f}% ({f['depth']*1e6:.1f} ppm)",
+            f"Sampled transit windows: {f['observed_transits']}", "", membership]
+        uncertainty = self.result.get("uncertainty", {})
+        if uncertainty:
+            std = uncertainty["std"]
+            def scatter(value, unit):
+                return f"{value:.6g} {unit}" if value > 0 else "No variation across resamples (grid-limited)."
+            lines += ["", f"Measurement uncertainty ({uncertainty['resamples']} resampled fits):",
+                "Period scatter: "+scatter(std["period_days"], "days"),
+                "Duration scatter: "+scatter(std["duration_days"]*24, "hours"),
+                "Depth scatter: "+scatter(std["depth"]*1e6, "ppm"),
+                "These local estimates assume the selected period and fixed detrending."]
+        return "\n".join(lines)
+
+    def show_details(self):
+        messagebox.showinfo("Measurement details", self.measurement_details())
 
     def export(self):
         if not self.result:
@@ -325,19 +357,18 @@ class Explorer(tk.Tk):
         if not self.report:
             messagebox.showinfo("Evaluation", "No training report found yet.")
             return
-        metrics = self.report["metrics"]
-        positive = metrics["1"]
-        messagebox.showinfo("Real-data evaluation", (
-            f"Real TESS / two-minute cadence / {self.report.get('selected_model', 'historical model')}\n"
-            f"Matched observations: {self.report['matched_rows']}\n"
-            f"Train / test observations: {self.report['train_rows']} / {self.report['test_rows']}\n"
-            f"Train / test distinct stars: {len(self.report['train_tic_ids'])} / {len(self.report['test_tic_ids'])}\n\n"
-            f"Accuracy: {metrics['accuracy']:.3f}\nPlanet precision: {positive['precision']:.3f}\n"
-            f"Planet recall: {positive['recall']:.3f}\nPlanet F1: {positive['f1-score']:.3f}\n\n"
-            f"Decision threshold: {self.report.get('threshold', 0.5):.3f}\n"
-            f"Balanced accuracy: {self.report.get('balanced_accuracy', 0):.3f}\n\n"
-            f"Confusion matrix [nonplanet, planet]:\n{self.report['confusion_matrix_labels_0_1']}\n\n"
-            f"{self.report.get('evaluation_status', '')}\n\n{self.report['limitations']}"))
+        messagebox.showinfo("About the model", (
+            "BLS finds repeating brightness dips.\n"
+            "A Random Forest compares their measurements with labeled TESS signals.\n\n"
+            "Planet-like candidate: resembles the planet examples.\n"
+            "False-positive-like signal: resembles the false-positive examples.\n"
+            "Insufficient periodic signal: too weak for this classifier.\n\n"
+            f"Independent accuracy: {self.report['accuracy']:.2%}\n"
+            f"Balanced accuracy: {self.report['balanced_accuracy']:.2%}\n"
+            f"Training stars: {self.report['train_rows']} | Evaluated signals: {self.report['test_rows']}\n\n"
+            "The model can disagree with known catalog labels. It does not confirm a planet.\n"
+            "See README.md for the full method and evaluation limits."))
+
 
 
 if __name__ == "__main__":
