@@ -1,0 +1,380 @@
+{
+  "selected_model": "Extra Trees",
+  "selection_rule": "Maximize training-only calibrated OOF balanced accuracy minus 0.25 CV standard deviation, require >=0.6 recall in both classes where feasible. Prefer SVM only within 0.01 of best selection score.",
+  "model_comparison": [
+    {
+      "accuracy": 0.8542600896860987,
+      "balanced_accuracy": 0.8532594431994832,
+      "metrics": {
+        "0": {
+          "precision": 0.8495145631067961,
+          "recall": 0.8373205741626795,
+          "f1-score": 0.8433734939759037,
+          "support": 209.0
+        },
+        "1": {
+          "precision": 0.8583333333333333,
+          "recall": 0.869198312236287,
+          "f1-score": 0.8637316561844863,
+          "support": 237.0
+        },
+        "accuracy": 0.8542600896860987,
+        "macro avg": {
+          "precision": 0.8539239482200647,
+          "recall": 0.8532594431994832,
+          "f1-score": 0.853552575080195,
+          "support": 446.0
+        },
+        "weighted avg": {
+          "precision": 0.8542007706038574,
+          "recall": 0.8542600896860987,
+          "f1-score": 0.8541916205306885,
+          "support": 446.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          175,
+          34
+        ],
+        [
+          31,
+          206
+        ]
+      ],
+      "average_precision": 0.9193422965617009,
+      "roc_auc": 0.918841984131791,
+      "brier_score": 0.11176704344717842,
+      "log_loss": 0.36185818460663294,
+      "model": "SVM",
+      "parameters": {
+        "classifier__C": 10,
+        "classifier__gamma": 0.003
+      },
+      "grid_cv_balanced_accuracy": 0.8738251229396793,
+      "grid_cv_std": 0.050039893327073225,
+      "threshold": 0.53,
+      "calibration": {
+        "ece_5_bins": 0.03865356722311449,
+        "brier_score": 0.11176704344717842,
+        "prior_baseline_brier": 0.249014659454242,
+        "probability_reliable": true,
+        "note": "Estimated calibration for the sampled catalog population, not a physical planet-confirmation probability."
+      },
+      "selection_score": 0.8407494698677149,
+      "minimum_class_recall": 0.8373205741626795,
+      "scope": "Training-only selection estimates; hyperparameters and threshold were selected on these training data. Final test is unopened."
+    },
+    {
+      "accuracy": 0.8587443946188341,
+      "balanced_accuracy": 0.8566309329134112,
+      "metrics": {
+        "0": {
+          "precision": 0.8686868686868687,
+          "recall": 0.8229665071770335,
+          "f1-score": 0.8452088452088452,
+          "support": 209.0
+        },
+        "1": {
+          "precision": 0.8508064516129032,
+          "recall": 0.890295358649789,
+          "f1-score": 0.8701030927835052,
+          "support": 237.0
+        },
+        "accuracy": 0.8587443946188341,
+        "macro avg": {
+          "precision": 0.859746660149886,
+          "recall": 0.8566309329134112,
+          "f1-score": 0.8576559689961751,
+          "support": 446.0
+        },
+        "weighted avg": {
+          "precision": 0.859185391452497,
+          "recall": 0.8587443946188341,
+          "f1-score": 0.8584374027765457,
+          "support": 446.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          172,
+          37
+        ],
+        [
+          26,
+          211
+        ]
+      ],
+      "average_precision": 0.9224609931785118,
+      "roc_auc": 0.9234853531988774,
+      "brier_score": 0.10703788683920866,
+      "log_loss": 0.35061003138532826,
+      "model": "Random Forest",
+      "parameters": {
+        "classifier__max_features": 0.5,
+        "classifier__min_samples_leaf": 5
+      },
+      "grid_cv_balanced_accuracy": 0.8582877715175327,
+      "grid_cv_std": 0.0537938715599308,
+      "threshold": 0.5,
+      "calibration": {
+        "ece_5_bins": 0.0373945778148274,
+        "brier_score": 0.10703788683920866,
+        "prior_baseline_brier": 0.249014659454242,
+        "probability_reliable": true,
+        "note": "Estimated calibration for the sampled catalog population, not a physical planet-confirmation probability."
+      },
+      "selection_score": 0.8431824650234285,
+      "minimum_class_recall": 0.8229665071770335,
+      "scope": "Training-only selection estimates; hyperparameters and threshold were selected on these training data. Final test is unopened."
+    },
+    {
+      "accuracy": 0.874439461883408,
+      "balanced_accuracy": 0.8725294248278925,
+      "metrics": {
+        "0": {
+          "precision": 0.8844221105527639,
+          "recall": 0.8421052631578947,
+          "f1-score": 0.8627450980392157,
+          "support": 209.0
+        },
+        "1": {
+          "precision": 0.8663967611336032,
+          "recall": 0.9029535864978903,
+          "f1-score": 0.8842975206611571,
+          "support": 237.0
+        },
+        "accuracy": 0.874439461883408,
+        "macro avg": {
+          "precision": 0.8754094358431835,
+          "recall": 0.8725294248278925,
+          "f1-score": 0.8735213093501863,
+          "support": 446.0
+        },
+        "weighted avg": {
+          "precision": 0.8748436176999812,
+          "recall": 0.874439461883408,
+          "f1-score": 0.8741978427957182,
+          "support": 446.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          176,
+          33
+        ],
+        [
+          23,
+          214
+        ]
+      ],
+      "average_precision": 0.9389232599788714,
+      "roc_auc": 0.9307128580946036,
+      "brier_score": 0.10151781452288722,
+      "log_loss": 0.3388886697439245,
+      "model": "Extra Trees",
+      "parameters": {
+        "classifier__max_features": 0.5,
+        "classifier__min_samples_leaf": 2
+      },
+      "grid_cv_balanced_accuracy": 0.8671307794004992,
+      "grid_cv_std": 0.0405528944257395,
+      "threshold": 0.5,
+      "calibration": {
+        "ece_5_bins": 0.03351892069607089,
+        "brier_score": 0.10151781452288722,
+        "prior_baseline_brier": 0.249014659454242,
+        "probability_reliable": true,
+        "note": "Estimated calibration for the sampled catalog population, not a physical planet-confirmation probability."
+      },
+      "selection_score": 0.8623912012214576,
+      "minimum_class_recall": 0.8421052631578947,
+      "scope": "Training-only selection estimates; hyperparameters and threshold were selected on these training data. Final test is unopened."
+    },
+    {
+      "accuracy": 0.8721973094170403,
+      "balanced_accuracy": 0.8690065209052551,
+      "metrics": {
+        "0": {
+          "precision": 0.9,
+          "recall": 0.8181818181818182,
+          "f1-score": 0.8571428571428571,
+          "support": 209.0
+        },
+        "1": {
+          "precision": 0.8515625,
+          "recall": 0.919831223628692,
+          "f1-score": 0.8843813387423936,
+          "support": 237.0
+        },
+        "accuracy": 0.8721973094170403,
+        "macro avg": {
+          "precision": 0.87578125,
+          "recall": 0.8690065209052551,
+          "f1-score": 0.8707620979426254,
+          "support": 446.0
+        },
+        "weighted avg": {
+          "precision": 0.8742607903587445,
+          "recall": 0.8721973094170403,
+          "f1-score": 0.8716171175444045,
+          "support": 446.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          171,
+          38
+        ],
+        [
+          19,
+          218
+        ]
+      ],
+      "average_precision": 0.9281770852890173,
+      "roc_auc": 0.9294207901802839,
+      "brier_score": 0.10530462075491802,
+      "log_loss": 0.34489192449730427,
+      "model": "Gradient Boosting",
+      "parameters": {
+        "classifier__l2_regularization": 1.0,
+        "classifier__max_leaf_nodes": 7,
+        "classifier__min_samples_leaf": 20
+      },
+      "grid_cv_balanced_accuracy": 0.8807115983393878,
+      "grid_cv_std": 0.05488188731074532,
+      "threshold": 0.5,
+      "calibration": {
+        "ece_5_bins": 0.052767505859391696,
+        "brier_score": 0.10530462075491802,
+        "prior_baseline_brier": 0.249014659454242,
+        "probability_reliable": true,
+        "note": "Estimated calibration for the sampled catalog population, not a physical planet-confirmation probability."
+      },
+      "selection_score": 0.8552860490775688,
+      "minimum_class_recall": 0.8181818181818182,
+      "scope": "Training-only selection estimates; hyperparameters and threshold were selected on these training data. Final test is unopened."
+    },
+    {
+      "accuracy": 0.820627802690583,
+      "balanced_accuracy": 0.8176569155916258,
+      "metrics": {
+        "0": {
+          "precision": 0.8341968911917098,
+          "recall": 0.7703349282296651,
+          "f1-score": 0.8009950248756219,
+          "support": 209.0
+        },
+        "1": {
+          "precision": 0.8102766798418972,
+          "recall": 0.8649789029535865,
+          "f1-score": 0.8367346938775511,
+          "support": 237.0
+        },
+        "accuracy": 0.820627802690583,
+        "macro avg": {
+          "precision": 0.8222367855168036,
+          "recall": 0.8176569155916258,
+          "f1-score": 0.8188648593765865,
+          "support": 446.0
+        },
+        "weighted avg": {
+          "precision": 0.8214859268645672,
+          "recall": 0.820627802690583,
+          "f1-score": 0.8199867323945843,
+          "support": 446.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          161,
+          48
+        ],
+        [
+          32,
+          205
+        ]
+      ],
+      "average_precision": 0.8812235663140924,
+      "roc_auc": 0.8894272505198554,
+      "brier_score": 0.13184923483839414,
+      "log_loss": 0.4194164274042269,
+      "model": "Logistic baseline",
+      "parameters": {
+        "classifier__C": 0.1
+      },
+      "grid_cv_balanced_accuracy": 0.8325499789952306,
+      "grid_cv_std": 0.03951877551587681,
+      "threshold": 0.495,
+      "calibration": {
+        "ece_5_bins": 0.04623699318715492,
+        "brier_score": 0.13184923483839414,
+        "prior_baseline_brier": 0.249014659454242,
+        "probability_reliable": true,
+        "note": "Estimated calibration for the sampled catalog population, not a physical planet-confirmation probability."
+      },
+      "selection_score": 0.8077772217126565,
+      "minimum_class_recall": 0.7703349282296651,
+      "scope": "Training-only selection estimates; hyperparameters and threshold were selected on these training data. Final test is unopened."
+    }
+  ],
+  "threshold": 0.5,
+  "calibration": {
+    "ece_5_bins": 0.03351892069607089,
+    "brier_score": 0.10151781452288722,
+    "prior_baseline_brier": 0.249014659454242,
+    "probability_reliable": true,
+    "note": "Estimated calibration for the sampled catalog population, not a physical planet-confirmation probability."
+  },
+  "probability_reliable": true,
+  "best_parameters": {
+    "classifier__max_features": 0.5,
+    "classifier__min_samples_leaf": 2
+  },
+  "training_cv_balanced_accuracy": 0.8671307794004992,
+  "training_class_counts": {
+    "0": 209,
+    "1": 237
+  },
+  "features": [
+    "period_days",
+    "duration_days",
+    "depth",
+    "flux_std",
+    "duty_cycle",
+    "transit_snr",
+    "odd_even_significance",
+    "secondary_ratio",
+    "shape_ratio",
+    "depth_scatter_ratio",
+    "red_noise_ratio",
+    "secondary_significance",
+    "observed_transits",
+    "minimum_event_snr",
+    "median_event_snr",
+    "event_fraction",
+    "event_depth_chi2",
+    "pink_snr",
+    "bls_snr",
+    "sde",
+    "peak_ratio",
+    "noise_mad",
+    "noise_skew",
+    "noise_kurtosis",
+    "variability_ratio",
+    "centroid_significance",
+    "centroid_shift",
+    "crowding",
+    "flux_fraction",
+    "stellar_radius",
+    "stellar_teff",
+    "stellar_logg",
+    "tess_magnitude",
+    "implied_radius_rjup",
+    "duration_density_ratio",
+    "ingress_fraction",
+    "positive_excursion_ratio",
+    "local_depth_snr"
+  ],
+  "test_status": "UNOPENED"
+}

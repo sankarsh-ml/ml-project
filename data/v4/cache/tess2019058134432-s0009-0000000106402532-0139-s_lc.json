@@ -1,0 +1,96 @@
+{
+  "pipeline": {
+    "version": 4,
+    "feature_set": "flux_centroid_stellar_v1",
+    "cadence_seconds": 120,
+    "window_days": 2.0,
+    "min_period": 0.6,
+    "max_period": 10.0,
+    "frequency_grid": 20000,
+    "search_bin_minutes": 8,
+    "peak_count": 4,
+    "max_duty_cycle": 0.15,
+    "mask_width": 1.7,
+    "durations_days": [
+      0.025,
+      0.04,
+      0.06,
+      0.09,
+      0.13,
+      0.18,
+      0.25,
+      0.35
+    ]
+  },
+  "features": {
+    "period_days": 4.8827366903297085,
+    "duration_days": 0.09,
+    "depth": 0.00037501608860310764,
+    "flux_std": 0.0005884950685288181,
+    "duty_cycle": 0.01843228617636613,
+    "bls_snr": 11.620829841220361,
+    "sde": 9.137052966559473,
+    "peak_ratio": 1.3102545184018521,
+    "transit_snr": 11.479357651651352,
+    "odd_even_significance": 1.450939451162992,
+    "secondary_ratio": 1e-06,
+    "secondary_significance": -0.48986235660657806,
+    "shape_ratio": 0.8912030858740172,
+    "depth_scatter_ratio": 0.34513405446414974,
+    "red_noise_ratio": 1.3869218766917097,
+    "observed_transits": 5,
+    "minimum_event_snr": 1.5094083560728873,
+    "median_event_snr": 4.688501810679158,
+    "event_fraction": 0.8,
+    "event_depth_chi2": 1.6223306609778128,
+    "pink_snr": 8.27685960151815,
+    "noise_mad": 0.0005620541623378961,
+    "noise_skew": 0.26630802445451324,
+    "noise_kurtosis": 0.6349671668381509,
+    "variability_ratio": 1.0433563189737327,
+    "ingress_fraction": 0.0,
+    "positive_excursion_ratio": 4.700434578407453,
+    "local_depth_snr": 10.483808761309447,
+    "centroid_shift": 0.00013232936845202948,
+    "centroid_significance": 1.59368472553619,
+    "stellar_radius": 0.93768102,
+    "stellar_teff": 5667.0,
+    "stellar_logg": 4.49828005,
+    "tess_magnitude": 8.84109974,
+    "crowding": 0.98107857,
+    "flux_fraction": 0.94263858,
+    "implied_radius_rjup": 0.17670040618665944,
+    "duration_density_ratio": 0.7497151180389845,
+    "tic_id": "106402532",
+    "sector": 9,
+    "epoch_btjd": 1545.7755472184106,
+    "source_file": "tess2019058134432-s0009-0000000106402532-0139-s_lc.fits"
+  },
+  "candidate_peaks": [
+    {
+      "period": 4.8833368769849805,
+      "epoch": 1545.775130607931,
+      "duration": 0.09,
+      "snr": 11.964365699457423
+    },
+    {
+      "period": 9.754859891413444,
+      "epoch": 1550.675130607931,
+      "duration": 0.13,
+      "snr": 9.13132947181181
+    },
+    {
+      "period": 2.4417919777520742,
+      "epoch": 1545.770130607931,
+      "duration": 0.09,
+      "snr": 8.723739501703323
+    },
+    {
+      "period": 7.350816173759291,
+      "epoch": 1550.662630607931,
+      "duration": 0.09,
+      "snr": 7.949873328376764
+    }
+  ],
+  "fits_sha256": "970bc8450db959d8301e191aa682eedd612d333c74c2d6e5ca9b0e2f61111469"
+}

@@ -1,0 +1,30 @@
+# Downloaded telescope observations and regenerable archive manifests
+*.fits
+*.fits.gz
+data/sector*_download.sh
+
+# Python/runtime caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Temporary downloads, generated logs, and editor/OS files
+*.part
+*.tmp
+*.log
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local credentials/configuration
+.env
+.env.*
+!.env.example

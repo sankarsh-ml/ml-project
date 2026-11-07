@@ -1,0 +1,314 @@
+{
+  "best_parameters": {
+    "svc__C": 10,
+    "svc__gamma": "scale"
+  },
+  "train_rows": 76,
+  "test_rows": 20,
+  "metrics": {
+    "0": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 6.0
+    },
+    "1": {
+      "precision": 0.7,
+      "recall": 1.0,
+      "f1-score": 0.8235294117647058,
+      "support": 14.0
+    },
+    "accuracy": 0.7,
+    "macro avg": {
+      "precision": 0.35,
+      "recall": 0.5,
+      "f1-score": 0.4117647058823529,
+      "support": 20.0
+    },
+    "weighted avg": {
+      "precision": 0.48999999999999994,
+      "recall": 0.7,
+      "f1-score": 0.5764705882352941,
+      "support": 20.0
+    }
+  },
+  "confusion_matrix_labels_0_1": [
+    [
+      0,
+      6
+    ],
+    [
+      0,
+      14
+    ]
+  ],
+  "average_precision": 0.7574663873646623,
+  "brier_score": 0.21694062085524965,
+  "train_tic_ids": [
+    "118327550",
+    "120585579",
+    "120610833",
+    "122617317",
+    "12862099",
+    "158623531",
+    "160148385",
+    "183532609",
+    "183537452",
+    "183979262",
+    "183985250",
+    "201248411",
+    "204376737",
+    "207084429",
+    "220396259",
+    "220479565",
+    "231663901",
+    "231670397",
+    "231702397",
+    "234523599",
+    "234994474",
+    "238176110",
+    "25155310",
+    "260043723",
+    "260271203",
+    "260609205",
+    "261136679",
+    "267263253",
+    "268766053",
+    "278866211",
+    "279740441",
+    "281541555",
+    "289793076",
+    "290131778",
+    "29344935",
+    "299799658",
+    "300871545",
+    "305048087",
+    "350743714",
+    "355703913",
+    "382474101",
+    "388104525",
+    "391821647",
+    "394357918",
+    "402026209",
+    "52204645",
+    "55650590",
+    "63898957",
+    "70440470",
+    "77031414",
+    "89020549",
+    "9033144",
+    "92226327",
+    "92352620",
+    "9725627",
+    "9727392"
+  ],
+  "test_tic_ids": [
+    "100100827",
+    "149603524",
+    "150271680",
+    "184240683",
+    "204317710",
+    "230982885",
+    "25375553",
+    "260304296",
+    "281459670",
+    "30312676",
+    "336732616",
+    "350445771",
+    "76923707",
+    "77044471",
+    "97409519"
+  ],
+  "test_predictions": [
+    {
+      "tic_id": "149603524",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.6276982212294969,
+      "sector": 1
+    },
+    {
+      "tic_id": "336732616",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.6967865078773059,
+      "sector": 1
+    },
+    {
+      "tic_id": "281459670",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.7856013938716422,
+      "sector": 1
+    },
+    {
+      "tic_id": "97409519",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.748054060276116,
+      "sector": 1
+    },
+    {
+      "tic_id": "25375553",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.6500441600184101,
+      "sector": 1
+    },
+    {
+      "tic_id": "350445771",
+      "label": 0,
+      "prediction": 1,
+      "probability": 0.7581188808287508,
+      "sector": 1
+    },
+    {
+      "tic_id": "149603524",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.6277559631097037,
+      "sector": 2
+    },
+    {
+      "tic_id": "281459670",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.7435269261387593,
+      "sector": 2
+    },
+    {
+      "tic_id": "76923707",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.6172318663336239,
+      "sector": 2
+    },
+    {
+      "tic_id": "260304296",
+      "label": 0,
+      "prediction": 1,
+      "probability": 0.6387835263485467,
+      "sector": 2
+    },
+    {
+      "tic_id": "230982885",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.7075978261602857,
+      "sector": 2
+    },
+    {
+      "tic_id": "77044471",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.7948459276200174,
+      "sector": 2
+    },
+    {
+      "tic_id": "184240683",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.65305956211232,
+      "sector": 2
+    },
+    {
+      "tic_id": "350445771",
+      "label": 0,
+      "prediction": 1,
+      "probability": 0.7433561186577166,
+      "sector": 2
+    },
+    {
+      "tic_id": "204317710",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.7710507072464621,
+      "sector": 2
+    },
+    {
+      "tic_id": "30312676",
+      "label": 0,
+      "prediction": 1,
+      "probability": 0.6521563613499916,
+      "sector": 2
+    },
+    {
+      "tic_id": "149603524",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.6294441370655708,
+      "sector": 3
+    },
+    {
+      "tic_id": "350445771",
+      "label": 0,
+      "prediction": 1,
+      "probability": 0.7468362679333906,
+      "sector": 3
+    },
+    {
+      "tic_id": "150271680",
+      "label": 0,
+      "prediction": 1,
+      "probability": 0.6771869873537842,
+      "sector": 3
+    },
+    {
+      "tic_id": "100100827",
+      "label": 1,
+      "prediction": 1,
+      "probability": 0.667146500398084,
+      "sector": 3
+    }
+  ],
+  "dataset": "Real TESS SPOC 120-second PDCSAP light curves",
+  "sector": 1,
+  "sectors": [
+    1,
+    2,
+    3
+  ],
+  "catalog_targets": 192,
+  "downloaded_analyzed": 192,
+  "matched_rows": 96,
+  "class_counts": {
+    "1": 66,
+    "0": 30
+  },
+  "unique_stars": 71,
+  "unique_stars_per_class": {
+    "0": 19,
+    "1": 52
+  },
+  "created_utc": "2026-11-07T16:10:23.070458+00:00",
+  "catalog_source": "https://exoplanetarchive.ipac.caltech.edu/TAP/sync",
+  "catalog_query": "select toi,tid,tfopwg_disp,pl_orbper,pl_tranmid,pl_trandurh,ra,dec from toi where tfopwg_disp in ('CP','KP','FP') and pl_orbper between 0.6 and 10",
+  "catalog_sha256": "d57efa3ef51dc6a0330b0abc9ce050369605ef00c1a638736b30ecdf0898c153",
+  "software": {
+    "python": "3.11.9",
+    "sklearn": "1.9.0",
+    "numpy": "2.4.6",
+    "lightkurve": "2.6.0"
+  },
+  "pipeline": {
+    "version": 2,
+    "cadence_seconds": 120,
+    "window_length": 1501,
+    "min_period": 0.6,
+    "max_period": 10.0,
+    "period_grid": 6000,
+    "search_bin_minutes": 10,
+    "refinement_points": 400,
+    "durations_days": [
+      0.025,
+      0.04,
+      0.06,
+      0.09,
+      0.13,
+      0.18,
+      0.25,
+      0.32
+    ]
+  },
+  "limitations": "Small, catalog-selected pilot; only recovered, ephemeris-matched signals. Not a blind survey accuracy estimate. CP/KP vs FP, no pure-noise training class."
+}

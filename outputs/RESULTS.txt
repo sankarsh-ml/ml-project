@@ -1,0 +1,4 @@
+Independent Extra Trees: accuracy 84.00%, balanced accuracy 84.00%.
+Training 446 distinct TICs; test 150 entirely new TICs.
+Planet precision/recall/F1: 0.842/0.842/0.842.
+Confusion matrix [FP, planet]: [[62, 12], [12, 64]]

@@ -1,0 +1,1793 @@
+{
+  "selected_model": "SVM",
+  "selection_rule": "Maximize training-only calibrated OOF balanced accuracy minus 0.25 CV standard deviation, require >=0.6 recall in both classes where feasible. Prefer SVM only within 0.01 of best selection score.",
+  "model_comparison": [
+    {
+      "accuracy": 0.8521739130434782,
+      "balanced_accuracy": 0.8455857385398982,
+      "metrics": {
+        "0": {
+          "precision": 0.8768115942028986,
+          "recall": 0.7806451612903226,
+          "f1-score": 0.825938566552901,
+          "support": 155.0
+        },
+        "1": {
+          "precision": 0.8357487922705314,
+          "recall": 0.9105263157894737,
+          "f1-score": 0.871536523929471,
+          "support": 190.0
+        },
+        "accuracy": 0.8521739130434782,
+        "macro avg": {
+          "precision": 0.856280193236715,
+          "recall": 0.8455857385398982,
+          "f1-score": 0.848737545241186,
+          "support": 345.0
+        },
+        "weighted avg": {
+          "precision": 0.8541972974865225,
+          "recall": 0.8521739130434782,
+          "f1-score": 0.8510504851081134,
+          "support": 345.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          121,
+          34
+        ],
+        [
+          17,
+          173
+        ]
+      ],
+      "average_precision": 0.920245415826549,
+      "roc_auc": 0.9127334465195246,
+      "brier_score": 0.11526717009499814,
+      "log_loss": 0.37321512586610084,
+      "model": "SVM",
+      "parameters": {
+        "classifier__C": 10,
+        "classifier__gamma": 0.003
+      },
+      "grid_cv_balanced_accuracy": 0.8599320882852293,
+      "grid_cv_std": 0.0413666108979844,
+      "threshold": 0.5,
+      "calibration": {
+        "ece_5_bins": 0.04801775201756778,
+        "brier_score": 0.11526717009499814,
+        "prior_baseline_brier": 0.24742701113211513,
+        "probability_reliable": true,
+        "note": "Estimated calibration for the sampled catalog population, not a physical planet-confirmation probability."
+      },
+      "selection_score": 0.8352440858154021,
+      "minimum_class_recall": 0.7806451612903226,
+      "scope": "Training-only selection estimates; hyperparameters and threshold were selected on these training data. Final test is unopened."
+    },
+    {
+      "accuracy": 0.8376811594202899,
+      "balanced_accuracy": 0.8389643463497454,
+      "metrics": {
+        "0": {
+          "precision": 0.8,
+          "recall": 0.8516129032258064,
+          "f1-score": 0.825,
+          "support": 155.0
+        },
+        "1": {
+          "precision": 0.8722222222222222,
+          "recall": 0.8263157894736842,
+          "f1-score": 0.8486486486486486,
+          "support": 190.0
+        },
+        "accuracy": 0.8376811594202899,
+        "macro avg": {
+          "precision": 0.8361111111111111,
+          "recall": 0.8389643463497454,
+          "f1-score": 0.8368243243243243,
+          "support": 345.0
+        },
+        "weighted avg": {
+          "precision": 0.8397745571658616,
+          "recall": 0.8376811594202899,
+          "f1-score": 0.838023893458676,
+          "support": 345.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          132,
+          23
+        ],
+        [
+          33,
+          157
+        ]
+      ],
+      "average_precision": 0.9293221240712264,
+      "roc_auc": 0.9190492359932088,
+      "brier_score": 0.11734487913200228,
+      "log_loss": 0.37170058707967196,
+      "model": "Random Forest",
+      "parameters": {
+        "classifier__max_features": 1.0,
+        "classifier__min_samples_leaf": 2
+      },
+      "grid_cv_balanced_accuracy": 0.8461799660441425,
+      "grid_cv_std": 0.031492341580286604,
+      "threshold": 0.605,
+      "calibration": {
+        "ece_5_bins": 0.04564225542062771,
+        "brier_score": 0.11734487913200228,
+        "prior_baseline_brier": 0.24742701113211513,
+        "probability_reliable": true,
+        "note": "Estimated calibration for the sampled catalog population, not a physical planet-confirmation probability."
+      },
+      "selection_score": 0.8310912609546737,
+      "minimum_class_recall": 0.8263157894736842,
+      "scope": "Training-only selection estimates; hyperparameters and threshold were selected on these training data. Final test is unopened."
+    },
+    {
+      "accuracy": 0.8376811594202899,
+      "balanced_accuracy": 0.833616298811545,
+      "metrics": {
+        "0": {
+          "precision": 0.8367346938775511,
+          "recall": 0.7935483870967742,
+          "f1-score": 0.8145695364238411,
+          "support": 155.0
+        },
+        "1": {
+          "precision": 0.8383838383838383,
+          "recall": 0.8736842105263158,
+          "f1-score": 0.8556701030927835,
+          "support": 190.0
+        },
+        "accuracy": 0.8376811594202899,
+        "macro avg": {
+          "precision": 0.8375592661306948,
+          "recall": 0.833616298811545,
+          "f1-score": 0.8351198197583123,
+          "support": 345.0
+        },
+        "weighted avg": {
+          "precision": 0.83764291838826,
+          "recall": 0.8376811594202899,
+          "f1-score": 0.8372046311110847,
+          "support": 345.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          123,
+          32
+        ],
+        [
+          24,
+          166
+        ]
+      ],
+      "average_precision": 0.9286799133536762,
+      "roc_auc": 0.9168760611205433,
+      "brier_score": 0.11753200192334909,
+      "log_loss": 0.37278204090860534,
+      "model": "Extra Trees",
+      "parameters": {
+        "classifier__max_features": 1.0,
+        "classifier__min_samples_leaf": 5
+      },
+      "grid_cv_balanced_accuracy": 0.85,
+      "grid_cv_std": 0.028998978135524215,
+      "threshold": 0.535,
+      "calibration": {
+        "ece_5_bins": 0.033354192326413276,
+        "brier_score": 0.11753200192334909,
+        "prior_baseline_brier": 0.24742701113211513,
+        "probability_reliable": true,
+        "note": "Estimated calibration for the sampled catalog population, not a physical planet-confirmation probability."
+      },
+      "selection_score": 0.8263665542776639,
+      "minimum_class_recall": 0.7935483870967742,
+      "scope": "Training-only selection estimates; hyperparameters and threshold were selected on these training data. Final test is unopened."
+    },
+    {
+      "accuracy": 0.8347826086956521,
+      "balanced_accuracy": 0.8357385398981325,
+      "metrics": {
+        "0": {
+          "precision": 0.7987804878048781,
+          "recall": 0.8451612903225807,
+          "f1-score": 0.8213166144200627,
+          "support": 155.0
+        },
+        "1": {
+          "precision": 0.8674033149171271,
+          "recall": 0.8263157894736842,
+          "f1-score": 0.8463611859838275,
+          "support": 190.0
+        },
+        "accuracy": 0.8347826086956521,
+        "macro avg": {
+          "precision": 0.8330919013610025,
+          "recall": 0.8357385398981325,
+          "f1-score": 0.8338389002019451,
+          "support": 345.0
+        },
+        "weighted avg": {
+          "precision": 0.8365727694029281,
+          "recall": 0.8347826086956521,
+          "f1-score": 0.835109277020397,
+          "support": 345.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          131,
+          24
+        ],
+        [
+          33,
+          157
+        ]
+      ],
+      "average_precision": 0.9298331986520371,
+      "roc_auc": 0.9178607809847199,
+      "brier_score": 0.11883615528171587,
+      "log_loss": 0.3760090333960157,
+      "model": "Gradient Boosting",
+      "parameters": {
+        "classifier__l2_regularization": 10.0,
+        "classifier__max_leaf_nodes": 15,
+        "classifier__min_samples_leaf": 8
+      },
+      "grid_cv_balanced_accuracy": 0.8602716468590831,
+      "grid_cv_std": 0.03577008234252455,
+      "threshold": 0.6,
+      "calibration": {
+        "ece_5_bins": 0.05215562287876733,
+        "brier_score": 0.11883615528171587,
+        "prior_baseline_brier": 0.24742701113211513,
+        "probability_reliable": true,
+        "note": "Estimated calibration for the sampled catalog population, not a physical planet-confirmation probability."
+      },
+      "selection_score": 0.8267960193125014,
+      "minimum_class_recall": 0.8263157894736842,
+      "scope": "Training-only selection estimates; hyperparameters and threshold were selected on these training data. Final test is unopened."
+    },
+    {
+      "accuracy": 0.8260869565217391,
+      "balanced_accuracy": 0.8213073005093379,
+      "metrics": {
+        "0": {
+          "precision": 0.8275862068965517,
+          "recall": 0.7741935483870968,
+          "f1-score": 0.8,
+          "support": 155.0
+        },
+        "1": {
+          "precision": 0.825,
+          "recall": 0.868421052631579,
+          "f1-score": 0.8461538461538461,
+          "support": 190.0
+        },
+        "accuracy": 0.8260869565217391,
+        "macro avg": {
+          "precision": 0.8262931034482759,
+          "recall": 0.8213073005093379,
+          "f1-score": 0.823076923076923,
+          "support": 345.0
+        },
+        "weighted avg": {
+          "precision": 0.8261619190404798,
+          "recall": 0.8260869565217391,
+          "f1-score": 0.8254180602006689,
+          "support": 345.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          120,
+          35
+        ],
+        [
+          25,
+          165
+        ]
+      ],
+      "average_precision": 0.875196758526229,
+      "roc_auc": 0.8731748726655347,
+      "brier_score": 0.13861661453298457,
+      "log_loss": 0.43987187322264415,
+      "model": "Logistic baseline",
+      "parameters": {
+        "classifier__C": 0.1
+      },
+      "grid_cv_balanced_accuracy": 0.8394736842105264,
+      "grid_cv_std": 0.03193295197421731,
+      "threshold": 0.515,
+      "calibration": {
+        "ece_5_bins": 0.051497235151529513,
+        "brier_score": 0.13861661453298457,
+        "prior_baseline_brier": 0.24742701113211513,
+        "probability_reliable": true,
+        "note": "Estimated calibration for the sampled catalog population, not a physical planet-confirmation probability."
+      },
+      "selection_score": 0.8133240625157835,
+      "minimum_class_recall": 0.7741935483870968,
+      "scope": "Training-only selection estimates; hyperparameters and threshold were selected on these training data. Final test is unopened."
+    }
+  ],
+  "threshold": 0.5,
+  "calibration": {
+    "ece_5_bins": 0.04801775201756778,
+    "brier_score": 0.11526717009499814,
+    "prior_baseline_brier": 0.24742701113211513,
+    "probability_reliable": true,
+    "note": "Estimated calibration for the sampled catalog population, not a physical planet-confirmation probability."
+  },
+  "probability_reliable": true,
+  "best_parameters": {
+    "classifier__C": 10,
+    "classifier__gamma": 0.003
+  },
+  "training_cv_balanced_accuracy": 0.8599320882852293,
+  "training_class_counts": {
+    "0": 155,
+    "1": 190
+  },
+  "features": [
+    "period_days",
+    "duration_days",
+    "depth",
+    "flux_std",
+    "duty_cycle",
+    "transit_snr",
+    "odd_even_significance",
+    "secondary_ratio",
+    "shape_ratio",
+    "depth_scatter_ratio",
+    "red_noise_ratio",
+    "secondary_significance",
+    "observed_transits",
+    "minimum_event_snr",
+    "median_event_snr",
+    "event_fraction",
+    "event_depth_chi2",
+    "pink_snr",
+    "bls_snr",
+    "sde",
+    "peak_ratio",
+    "noise_mad",
+    "noise_skew",
+    "noise_kurtosis",
+    "variability_ratio",
+    "centroid_significance",
+    "centroid_shift",
+    "crowding",
+    "flux_fraction",
+    "stellar_radius",
+    "stellar_teff",
+    "stellar_logg",
+    "tess_magnitude",
+    "implied_radius_rjup",
+    "duration_density_ratio",
+    "ingress_fraction",
+    "positive_excursion_ratio",
+    "local_depth_snr"
+  ],
+  "test_status": "UNOPENED",
+  "pipeline": {
+    "version": 4,
+    "feature_set": "flux_centroid_stellar_v1",
+    "cadence_seconds": 120,
+    "window_days": 2.0,
+    "min_period": 0.6,
+    "max_period": 10.0,
+    "frequency_grid": 20000,
+    "search_bin_minutes": 8,
+    "peak_count": 4,
+    "max_duty_cycle": 0.15,
+    "mask_width": 1.7,
+    "durations_days": [
+      0.025,
+      0.04,
+      0.06,
+      0.09,
+      0.13,
+      0.18,
+      0.25,
+      0.35
+    ]
+  },
+  "created_utc": "2026-11-07T17:02:55.253685+00:00",
+  "dataset": "TESS SPOC two-minute PDCSAP; CP/KP vs vetted TOI FP",
+  "sectors": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55
+  ],
+  "sector": 1,
+  "unique_stars": 345,
+  "matched_rows": 345,
+  "train_rows": 345,
+  "train_tic_ids": [
+    "100099031",
+    "101395259",
+    "108645766",
+    "110428269",
+    "112395568",
+    "1133072",
+    "114749636",
+    "116156517",
+    "116608612",
+    "117256577",
+    "117689799",
+    "117979897",
+    "118327550",
+    "120585579",
+    "121660904",
+    "122596693",
+    "124709665",
+    "126606859",
+    "133654092",
+    "134537478",
+    "135083444",
+    "135100529",
+    "13574905",
+    "138017750",
+    "138168780",
+    "138294130",
+    "138359318",
+    "138497780",
+    "138644215",
+    "139733308",
+    "139853601",
+    "140691463",
+    "140706664",
+    "141776043",
+    "143257766",
+    "144043410",
+    "144441148",
+    "145027461",
+    "145982812",
+    "146244533",
+    "14661418",
+    "146846569",
+    "14770122",
+    "148673433",
+    "151724385",
+    "151759246",
+    "151825527",
+    "15247229",
+    "153078576",
+    "153651591",
+    "153896150",
+    "154459165",
+    "154867950",
+    "154872375",
+    "155114483",
+    "155995204",
+    "156115721",
+    "156648452",
+    "156816238",
+    "157266693",
+    "158297421",
+    "158588995",
+    "158916431",
+    "159098316",
+    "159725995",
+    "159742538",
+    "160222069",
+    "160708862",
+    "161156159",
+    "165464482",
+    "165987272",
+    "167031605",
+    "16740101",
+    "168699373",
+    "169532369",
+    "172464366",
+    "172754786",
+    "175180796",
+    "17746821",
+    "178284730",
+    "178289267",
+    "178709444",
+    "178879588",
+    "179317684",
+    "17993892",
+    "180987952",
+    "181949561",
+    "183537452",
+    "186599508",
+    "188570092",
+    "188589164",
+    "188593930",
+    "190496853",
+    "190998418",
+    "192826603",
+    "194736418",
+    "19684256",
+    "198241702",
+    "198616607",
+    "201177276",
+    "201186294",
+    "201248411",
+    "20182165",
+    "207084429",
+    "212957629",
+    "21535395",
+    "219388773",
+    "219698950",
+    "219824469",
+    "219852584",
+    "219854185",
+    "220396259",
+    "22233480",
+    "22843856",
+    "229536616",
+    "232612416",
+    "233390838",
+    "233735068",
+    "233948455",
+    "234523599",
+    "236312126",
+    "236387002",
+    "239816546",
+    "240681314",
+    "242083025",
+    "24364065",
+    "243921117",
+    "248075138",
+    "248111245",
+    "250386181",
+    "251878904",
+    "255930614",
+    "256364928",
+    "256886630",
+    "257060897",
+    "258777137",
+    "259389219",
+    "260043723",
+    "26017005",
+    "260271203",
+    "262530873",
+    "263179590",
+    "265077027",
+    "267263253",
+    "267484653",
+    "268159158",
+    "268823307",
+    "268914377",
+    "268924036",
+    "269269546",
+    "269269740",
+    "269450900",
+    "270468559",
+    "270604417",
+    "27064468",
+    "271168962",
+    "271354351",
+    "271581073",
+    "27318774",
+    "274138511",
+    "275111900",
+    "277014266",
+    "278968371",
+    "27916356",
+    "27990610",
+    "279947414",
+    "279999655",
+    "28230919",
+    "284288080",
+    "284326455",
+    "284441182",
+    "285048486",
+    "286865921",
+    "286916251",
+    "286923464",
+    "287190564",
+    "287563610",
+    "288735205",
+    "289661991",
+    "292321872",
+    "29344935",
+    "293687315",
+    "293708935",
+    "293853437",
+    "294090620",
+    "294179389",
+    "294283951",
+    "298495970",
+    "29960109",
+    "29960110",
+    "300871545",
+    "304021498",
+    "305243225",
+    "305424003",
+    "305943739",
+    "306996324",
+    "307734817",
+    "310003988",
+    "314724818",
+    "31858844",
+    "324395151",
+    "32499655",
+    "325172035",
+    "325680697",
+    "328081248",
+    "32949762",
+    "33153766",
+    "336128819",
+    "336267424",
+    "341729521",
+    "346418409",
+    "347329162",
+    "347430350",
+    "348673213",
+    "348755723",
+    "348755728",
+    "350153977",
+    "353367071",
+    "35377903",
+    "35516889",
+    "360742636",
+    "362709886",
+    "363761216",
+    "365733349",
+    "368739874",
+    "371234684",
+    "372172128",
+    "373614579",
+    "374200604",
+    "374530847",
+    "375506058",
+    "37575651",
+    "376524552",
+    "379929661",
+    "379931600",
+    "380255458",
+    "380619414",
+    "38087018",
+    "380886535",
+    "382391899",
+    "384744828",
+    "385624852",
+    "38686737",
+    "38846515",
+    "39077574",
+    "391821647",
+    "391880567",
+    "393911494",
+    "394357918",
+    "394509844",
+    "394561119",
+    "394918211",
+    "396740648",
+    "39699648",
+    "398943781",
+    "39926974",
+    "399642071",
+    "399860444",
+    "399870368",
+    "404340025",
+    "405717754",
+    "40779013",
+    "408310006",
+    "412961700",
+    "413376180",
+    "417646390",
+    "420779000",
+    "424435940",
+    "427654774",
+    "434234955",
+    "437261733",
+    "437333618",
+    "438295981",
+    "44647437",
+    "447283466",
+    "44745077",
+    "44745133",
+    "449050248",
+    "449197831",
+    "450327768",
+    "452808876",
+    "453209605",
+    "453211454",
+    "453789494",
+    "455096220",
+    "458419328",
+    "458856474",
+    "459997997",
+    "460396820",
+    "461080504",
+    "461271719",
+    "461591646",
+    "4616072",
+    "466382581",
+    "467331291",
+    "467651916",
+    "467783290",
+    "467971286",
+    "470381900",
+    "48103627",
+    "48476907",
+    "50365310",
+    "50618703",
+    "50712784",
+    "52548453",
+    "53189332",
+    "53427308",
+    "53458803",
+    "53750200",
+    "54390047",
+    "56399553",
+    "58542531",
+    "59003115",
+    "60286662",
+    "61538902",
+    "61980227",
+    "63898957",
+    "64531556",
+    "66356824",
+    "66497310",
+    "67646988",
+    "69679391",
+    "70440470",
+    "7059054",
+    "77031413",
+    "81429971",
+    "82362447",
+    "82707763",
+    "8400842",
+    "85593751",
+    "86280613",
+    "86396382",
+    "8767448",
+    "89510024",
+    "89759617",
+    "89876424",
+    "90544017",
+    "9100874",
+    "9155187",
+    "92013169",
+    "95129101",
+    "9725627",
+    "97735908",
+    "98545929",
+    "98669309"
+  ],
+  "quarantined_development_tic_ids": [
+    "100100827",
+    "149603524",
+    "150271680",
+    "184240683",
+    "204317710",
+    "230982885",
+    "25375553",
+    "260304296",
+    "281459670",
+    "30312676",
+    "336732616",
+    "350445771",
+    "76923707",
+    "77044471",
+    "97409519"
+  ],
+  "split_plan_sha256": "43ccb1f92c1a5f9292c002d4bb7d152bdfcda6d6f8b04531ee9a03ffe3188383",
+  "historical_evaluations": [
+    {
+      "best_parameters": {
+        "svc__C": 10,
+        "svc__gamma": 0.01
+      },
+      "selection_metric": "training grouped CV balanced accuracy",
+      "training_cv_balanced_accuracy": 0.6688453159041394,
+      "threshold": 0.71,
+      "threshold_training_oof_balanced_accuracy": 0.6618589743589745,
+      "train_rows": 76,
+      "test_rows": 20,
+      "metrics": {
+        "0": {
+          "precision": 0.29411764705882354,
+          "recall": 0.8333333333333334,
+          "f1-score": 0.43478260869565216,
+          "support": 6.0
+        },
+        "1": {
+          "precision": 0.6666666666666666,
+          "recall": 0.14285714285714285,
+          "f1-score": 0.23529411764705882,
+          "support": 14.0
+        },
+        "accuracy": 0.35,
+        "macro avg": {
+          "precision": 0.48039215686274506,
+          "recall": 0.48809523809523814,
+          "f1-score": 0.3350383631713555,
+          "support": 20.0
+        },
+        "weighted avg": {
+          "precision": 0.5549019607843138,
+          "recall": 0.35,
+          "f1-score": 0.2951406649616368,
+          "support": 20.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          5,
+          1
+        ],
+        [
+          12,
+          2
+        ]
+      ],
+      "average_precision": 0.6630995656758593,
+      "brier_score": 0.20496812330726807,
+      "balanced_accuracy": 0.48809523809523814,
+      "majority_baseline_accuracy": 0.7,
+      "evaluation_status": "Development holdout: excluded from fitting and threshold selection; initial baseline results were inspected during development.",
+      "train_tic_ids": [
+        "118327550",
+        "120585579",
+        "120610833",
+        "122617317",
+        "12862099",
+        "158623531",
+        "160148385",
+        "183532609",
+        "183537452",
+        "183979262",
+        "183985250",
+        "201248411",
+        "204376737",
+        "207084429",
+        "220396259",
+        "220479565",
+        "231663901",
+        "231670397",
+        "231702397",
+        "234523599",
+        "234994474",
+        "238176110",
+        "25155310",
+        "260043723",
+        "260271203",
+        "260609205",
+        "261136679",
+        "267263253",
+        "268766053",
+        "278866211",
+        "279740441",
+        "281541555",
+        "289793076",
+        "290131778",
+        "29344935",
+        "299799658",
+        "300871545",
+        "305048087",
+        "350743714",
+        "355703913",
+        "382474101",
+        "388104525",
+        "391821647",
+        "394357918",
+        "402026209",
+        "52204645",
+        "55650590",
+        "63898957",
+        "70440470",
+        "77031414",
+        "89020549",
+        "9033144",
+        "92226327",
+        "92352620",
+        "9725627",
+        "9727392"
+      ],
+      "test_tic_ids": [
+        "100100827",
+        "149603524",
+        "150271680",
+        "184240683",
+        "204317710",
+        "230982885",
+        "25375553",
+        "260304296",
+        "281459670",
+        "30312676",
+        "336732616",
+        "350445771",
+        "76923707",
+        "77044471",
+        "97409519"
+      ],
+      "test_predictions": [
+        {
+          "tic_id": "149603524",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6731575840375967,
+          "sector": 1
+        },
+        {
+          "tic_id": "336732616",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6087034347822441,
+          "sector": 1
+        },
+        {
+          "tic_id": "281459670",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.651496341134962,
+          "sector": 1
+        },
+        {
+          "tic_id": "97409519",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6740340136221148,
+          "sector": 1
+        },
+        {
+          "tic_id": "25375553",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6380041021883053,
+          "sector": 1
+        },
+        {
+          "tic_id": "350445771",
+          "label": 0,
+          "prediction": 0,
+          "probability": 0.6890813636792913,
+          "sector": 1
+        },
+        {
+          "tic_id": "149603524",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.5908682939170805,
+          "sector": 2
+        },
+        {
+          "tic_id": "281459670",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.7759489254867425,
+          "sector": 2
+        },
+        {
+          "tic_id": "76923707",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6925198905452575,
+          "sector": 2
+        },
+        {
+          "tic_id": "260304296",
+          "label": 0,
+          "prediction": 0,
+          "probability": 0.689273259344637,
+          "sector": 2
+        },
+        {
+          "tic_id": "230982885",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6802121393286745,
+          "sector": 2
+        },
+        {
+          "tic_id": "77044471",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6908766809730187,
+          "sector": 2
+        },
+        {
+          "tic_id": "184240683",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6791120259032134,
+          "sector": 2
+        },
+        {
+          "tic_id": "204317710",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6881101628398772,
+          "sector": 2
+        },
+        {
+          "tic_id": "350445771",
+          "label": 0,
+          "prediction": 0,
+          "probability": 0.697558700724914,
+          "sector": 2
+        },
+        {
+          "tic_id": "30312676",
+          "label": 0,
+          "prediction": 0,
+          "probability": 0.43534206156717886,
+          "sector": 2
+        },
+        {
+          "tic_id": "149603524",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.720181792564507,
+          "sector": 3
+        },
+        {
+          "tic_id": "350445771",
+          "label": 0,
+          "prediction": 1,
+          "probability": 0.7788911365658339,
+          "sector": 3
+        },
+        {
+          "tic_id": "150271680",
+          "label": 0,
+          "prediction": 0,
+          "probability": 0.6014381644597097,
+          "sector": 3
+        },
+        {
+          "tic_id": "100100827",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6873704673901776,
+          "sector": 3
+        }
+      ],
+      "dataset": "Real TESS SPOC 120-second PDCSAP light curves",
+      "sector": 1,
+      "sectors": [
+        1,
+        2,
+        3
+      ],
+      "catalog_targets": 192,
+      "downloaded_analyzed": 190,
+      "matched_rows": 96,
+      "class_counts": {
+        "1": 66,
+        "0": 30
+      },
+      "unique_stars": 71,
+      "unique_stars_per_class": {
+        "0": 19,
+        "1": 52
+      },
+      "created_utc": "2026-11-07T16:17:32.669519+00:00",
+      "catalog_source": "https://exoplanetarchive.ipac.caltech.edu/TAP/sync",
+      "catalog_query": "select toi,tid,tfopwg_disp,pl_orbper,pl_tranmid,pl_trandurh,ra,dec from toi where tfopwg_disp in ('CP','KP','FP') and pl_orbper between 0.6 and 10",
+      "catalog_sha256": "d57efa3ef51dc6a0330b0abc9ce050369605ef00c1a638736b30ecdf0898c153",
+      "software": {
+        "python": "3.11.9",
+        "sklearn": "1.9.0",
+        "numpy": "2.4.6",
+        "lightkurve": "2.6.0"
+      },
+      "pipeline": {
+        "version": 3,
+        "feature_set": "transit_vetting_v1",
+        "cadence_seconds": 120,
+        "window_length": 1501,
+        "min_period": 0.6,
+        "max_period": 10.0,
+        "period_grid": 6000,
+        "search_bin_minutes": 10,
+        "refinement_points": 400,
+        "durations_days": [
+          0.025,
+          0.04,
+          0.06,
+          0.09,
+          0.13,
+          0.18,
+          0.25,
+          0.32
+        ]
+      },
+      "limitations": "Small, catalog-selected pilot; only recovered, ephemeris-matched signals. Not a blind survey accuracy estimate. CP/KP vs FP, no pure-noise training class.",
+      "downloaded_files": 192,
+      "rejected_or_failed_observations": 2
+    },
+    {
+      "best_parameters": {
+        "svc__C": 10,
+        "svc__gamma": "scale"
+      },
+      "train_rows": 76,
+      "test_rows": 20,
+      "metrics": {
+        "0": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 6.0
+        },
+        "1": {
+          "precision": 0.7,
+          "recall": 1.0,
+          "f1-score": 0.8235294117647058,
+          "support": 14.0
+        },
+        "accuracy": 0.7,
+        "macro avg": {
+          "precision": 0.35,
+          "recall": 0.5,
+          "f1-score": 0.4117647058823529,
+          "support": 20.0
+        },
+        "weighted avg": {
+          "precision": 0.48999999999999994,
+          "recall": 0.7,
+          "f1-score": 0.5764705882352941,
+          "support": 20.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          14
+        ]
+      ],
+      "average_precision": 0.7574663873646623,
+      "brier_score": 0.21694062085524965,
+      "train_tic_ids": [
+        "118327550",
+        "120585579",
+        "120610833",
+        "122617317",
+        "12862099",
+        "158623531",
+        "160148385",
+        "183532609",
+        "183537452",
+        "183979262",
+        "183985250",
+        "201248411",
+        "204376737",
+        "207084429",
+        "220396259",
+        "220479565",
+        "231663901",
+        "231670397",
+        "231702397",
+        "234523599",
+        "234994474",
+        "238176110",
+        "25155310",
+        "260043723",
+        "260271203",
+        "260609205",
+        "261136679",
+        "267263253",
+        "268766053",
+        "278866211",
+        "279740441",
+        "281541555",
+        "289793076",
+        "290131778",
+        "29344935",
+        "299799658",
+        "300871545",
+        "305048087",
+        "350743714",
+        "355703913",
+        "382474101",
+        "388104525",
+        "391821647",
+        "394357918",
+        "402026209",
+        "52204645",
+        "55650590",
+        "63898957",
+        "70440470",
+        "77031414",
+        "89020549",
+        "9033144",
+        "92226327",
+        "92352620",
+        "9725627",
+        "9727392"
+      ],
+      "test_tic_ids": [
+        "100100827",
+        "149603524",
+        "150271680",
+        "184240683",
+        "204317710",
+        "230982885",
+        "25375553",
+        "260304296",
+        "281459670",
+        "30312676",
+        "336732616",
+        "350445771",
+        "76923707",
+        "77044471",
+        "97409519"
+      ],
+      "test_predictions": [
+        {
+          "tic_id": "149603524",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.6276982212294969,
+          "sector": 1
+        },
+        {
+          "tic_id": "336732616",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.6967865078773059,
+          "sector": 1
+        },
+        {
+          "tic_id": "281459670",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.7856013938716422,
+          "sector": 1
+        },
+        {
+          "tic_id": "97409519",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.748054060276116,
+          "sector": 1
+        },
+        {
+          "tic_id": "25375553",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.6500441600184101,
+          "sector": 1
+        },
+        {
+          "tic_id": "350445771",
+          "label": 0,
+          "prediction": 1,
+          "probability": 0.7581188808287508,
+          "sector": 1
+        },
+        {
+          "tic_id": "149603524",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.6277559631097037,
+          "sector": 2
+        },
+        {
+          "tic_id": "281459670",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.7435269261387593,
+          "sector": 2
+        },
+        {
+          "tic_id": "76923707",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.6172318663336239,
+          "sector": 2
+        },
+        {
+          "tic_id": "260304296",
+          "label": 0,
+          "prediction": 1,
+          "probability": 0.6387835263485467,
+          "sector": 2
+        },
+        {
+          "tic_id": "230982885",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.7075978261602857,
+          "sector": 2
+        },
+        {
+          "tic_id": "77044471",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.7948459276200174,
+          "sector": 2
+        },
+        {
+          "tic_id": "184240683",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.65305956211232,
+          "sector": 2
+        },
+        {
+          "tic_id": "350445771",
+          "label": 0,
+          "prediction": 1,
+          "probability": 0.7433561186577166,
+          "sector": 2
+        },
+        {
+          "tic_id": "204317710",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.7710507072464621,
+          "sector": 2
+        },
+        {
+          "tic_id": "30312676",
+          "label": 0,
+          "prediction": 1,
+          "probability": 0.6521563613499916,
+          "sector": 2
+        },
+        {
+          "tic_id": "149603524",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.6294441370655708,
+          "sector": 3
+        },
+        {
+          "tic_id": "350445771",
+          "label": 0,
+          "prediction": 1,
+          "probability": 0.7468362679333906,
+          "sector": 3
+        },
+        {
+          "tic_id": "150271680",
+          "label": 0,
+          "prediction": 1,
+          "probability": 0.6771869873537842,
+          "sector": 3
+        },
+        {
+          "tic_id": "100100827",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.667146500398084,
+          "sector": 3
+        }
+      ],
+      "dataset": "Real TESS SPOC 120-second PDCSAP light curves",
+      "sector": 1,
+      "sectors": [
+        1,
+        2,
+        3
+      ],
+      "catalog_targets": 192,
+      "downloaded_analyzed": 192,
+      "matched_rows": 96,
+      "class_counts": {
+        "1": 66,
+        "0": 30
+      },
+      "unique_stars": 71,
+      "unique_stars_per_class": {
+        "0": 19,
+        "1": 52
+      },
+      "created_utc": "2026-11-07T16:10:23.070458+00:00",
+      "catalog_source": "https://exoplanetarchive.ipac.caltech.edu/TAP/sync",
+      "catalog_query": "select toi,tid,tfopwg_disp,pl_orbper,pl_tranmid,pl_trandurh,ra,dec from toi where tfopwg_disp in ('CP','KP','FP') and pl_orbper between 0.6 and 10",
+      "catalog_sha256": "d57efa3ef51dc6a0330b0abc9ce050369605ef00c1a638736b30ecdf0898c153",
+      "software": {
+        "python": "3.11.9",
+        "sklearn": "1.9.0",
+        "numpy": "2.4.6",
+        "lightkurve": "2.6.0"
+      },
+      "pipeline": {
+        "version": 2,
+        "cadence_seconds": 120,
+        "window_length": 1501,
+        "min_period": 0.6,
+        "max_period": 10.0,
+        "period_grid": 6000,
+        "search_bin_minutes": 10,
+        "refinement_points": 400,
+        "durations_days": [
+          0.025,
+          0.04,
+          0.06,
+          0.09,
+          0.13,
+          0.18,
+          0.25,
+          0.32
+        ]
+      },
+      "limitations": "Small, catalog-selected pilot; only recovered, ephemeris-matched signals. Not a blind survey accuracy estimate. CP/KP vs FP, no pure-noise training class."
+    },
+    {
+      "best_parameters": {
+        "svc__C": 10,
+        "svc__gamma": 0.01
+      },
+      "selection_metric": "training grouped CV balanced accuracy",
+      "training_cv_balanced_accuracy": 0.6122004357298475,
+      "threshold": 0.6799999999999999,
+      "threshold_training_oof_balanced_accuracy": 0.6522435897435898,
+      "train_rows": 76,
+      "test_rows": 20,
+      "metrics": {
+        "0": {
+          "precision": 0.18181818181818182,
+          "recall": 0.3333333333333333,
+          "f1-score": 0.23529411764705882,
+          "support": 6.0
+        },
+        "1": {
+          "precision": 0.5555555555555556,
+          "recall": 0.35714285714285715,
+          "f1-score": 0.43478260869565216,
+          "support": 14.0
+        },
+        "accuracy": 0.35,
+        "macro avg": {
+          "precision": 0.36868686868686873,
+          "recall": 0.34523809523809523,
+          "f1-score": 0.3350383631713555,
+          "support": 20.0
+        },
+        "weighted avg": {
+          "precision": 0.4434343434343434,
+          "recall": 0.35,
+          "f1-score": 0.3749360613810741,
+          "support": 20.0
+        }
+      },
+      "confusion_matrix_labels_0_1": [
+        [
+          2,
+          4
+        ],
+        [
+          9,
+          5
+        ]
+      ],
+      "average_precision": 0.6060634178834091,
+      "brier_score": 0.21694745852836322,
+      "balanced_accuracy": 0.34523809523809523,
+      "majority_baseline_accuracy": 0.7,
+      "evaluation_status": "Development holdout: excluded from fitting and threshold selection; initial baseline results were inspected during development.",
+      "train_tic_ids": [
+        "118327550",
+        "120585579",
+        "120610833",
+        "122617317",
+        "12862099",
+        "158623531",
+        "160148385",
+        "183532609",
+        "183537452",
+        "183979262",
+        "183985250",
+        "201248411",
+        "204376737",
+        "207084429",
+        "220396259",
+        "220479565",
+        "231663901",
+        "231670397",
+        "231702397",
+        "234523599",
+        "234994474",
+        "238176110",
+        "25155310",
+        "260043723",
+        "260271203",
+        "260609205",
+        "261136679",
+        "267263253",
+        "268766053",
+        "278866211",
+        "279740441",
+        "281541555",
+        "289793076",
+        "290131778",
+        "29344935",
+        "299799658",
+        "300871545",
+        "305048087",
+        "350743714",
+        "355703913",
+        "382474101",
+        "388104525",
+        "391821647",
+        "394357918",
+        "402026209",
+        "52204645",
+        "55650590",
+        "63898957",
+        "70440470",
+        "77031414",
+        "89020549",
+        "9033144",
+        "92226327",
+        "92352620",
+        "9725627",
+        "9727392"
+      ],
+      "test_tic_ids": [
+        "100100827",
+        "149603524",
+        "150271680",
+        "184240683",
+        "204317710",
+        "230982885",
+        "25375553",
+        "260304296",
+        "281459670",
+        "30312676",
+        "336732616",
+        "350445771",
+        "76923707",
+        "77044471",
+        "97409519"
+      ],
+      "test_predictions": [
+        {
+          "tic_id": "149603524",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6428009337709418,
+          "sector": 1
+        },
+        {
+          "tic_id": "336732616",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6298758620179029,
+          "sector": 1
+        },
+        {
+          "tic_id": "281459670",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.7143775396771849,
+          "sector": 1
+        },
+        {
+          "tic_id": "97409519",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.7022331050020325,
+          "sector": 1
+        },
+        {
+          "tic_id": "25375553",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.5846240552550662,
+          "sector": 1
+        },
+        {
+          "tic_id": "350445771",
+          "label": 0,
+          "prediction": 1,
+          "probability": 0.7317724299032055,
+          "sector": 1
+        },
+        {
+          "tic_id": "149603524",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6453681047498945,
+          "sector": 2
+        },
+        {
+          "tic_id": "281459670",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.6940230412828025,
+          "sector": 2
+        },
+        {
+          "tic_id": "76923707",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6724651147412576,
+          "sector": 2
+        },
+        {
+          "tic_id": "260304296",
+          "label": 0,
+          "prediction": 1,
+          "probability": 0.6948608305117306,
+          "sector": 2
+        },
+        {
+          "tic_id": "230982885",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6709883777198762,
+          "sector": 2
+        },
+        {
+          "tic_id": "77044471",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.7145704736478057,
+          "sector": 2
+        },
+        {
+          "tic_id": "184240683",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6511235664060367,
+          "sector": 2
+        },
+        {
+          "tic_id": "204317710",
+          "label": 1,
+          "prediction": 1,
+          "probability": 0.7216661730229882,
+          "sector": 2
+        },
+        {
+          "tic_id": "350445771",
+          "label": 0,
+          "prediction": 1,
+          "probability": 0.7283566629764167,
+          "sector": 2
+        },
+        {
+          "tic_id": "30312676",
+          "label": 0,
+          "prediction": 0,
+          "probability": 0.5060768094510676,
+          "sector": 2
+        },
+        {
+          "tic_id": "149603524",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6459516695882649,
+          "sector": 3
+        },
+        {
+          "tic_id": "350445771",
+          "label": 0,
+          "prediction": 1,
+          "probability": 0.7324421017827812,
+          "sector": 3
+        },
+        {
+          "tic_id": "150271680",
+          "label": 0,
+          "prediction": 0,
+          "probability": 0.6362468858860467,
+          "sector": 3
+        },
+        {
+          "tic_id": "100100827",
+          "label": 1,
+          "prediction": 0,
+          "probability": 0.6199416869743543,
+          "sector": 3
+        }
+      ],
+      "dataset": "Real TESS SPOC 120-second PDCSAP light curves",
+      "sector": 1,
+      "sectors": [
+        1,
+        2,
+        3
+      ],
+      "catalog_targets": 192,
+      "downloaded_analyzed": 192,
+      "matched_rows": 96,
+      "class_counts": {
+        "1": 66,
+        "0": 30
+      },
+      "unique_stars": 71,
+      "unique_stars_per_class": {
+        "0": 19,
+        "1": 52
+      },
+      "created_utc": "2026-11-07T16:13:10.552217+00:00",
+      "catalog_source": "https://exoplanetarchive.ipac.caltech.edu/TAP/sync",
+      "catalog_query": "select toi,tid,tfopwg_disp,pl_orbper,pl_tranmid,pl_trandurh,ra,dec from toi where tfopwg_disp in ('CP','KP','FP') and pl_orbper between 0.6 and 10",
+      "catalog_sha256": "d57efa3ef51dc6a0330b0abc9ce050369605ef00c1a638736b30ecdf0898c153",
+      "software": {
+        "python": "3.11.9",
+        "sklearn": "1.9.0",
+        "numpy": "2.4.6",
+        "lightkurve": "2.6.0"
+      },
+      "pipeline": {
+        "version": 2,
+        "cadence_seconds": 120,
+        "window_length": 1501,
+        "min_period": 0.6,
+        "max_period": 10.0,
+        "period_grid": 6000,
+        "search_bin_minutes": 10,
+        "refinement_points": 400,
+        "durations_days": [
+          0.025,
+          0.04,
+          0.06,
+          0.09,
+          0.13,
+          0.18,
+          0.25,
+          0.32
+        ]
+      },
+      "limitations": "Small, catalog-selected pilot; only recovered, ephemeris-matched signals. Not a blind survey accuracy estimate. CP/KP vs FP, no pure-noise training class."
+    }
+  ],
+  "limitations": "Catalog-selected, ephemeris-recovered signals only. Not blind-survey completeness, false-alarm rate, or confirmation. Probabilities refer to the sampled CP/KP-vs-FP population."
+}

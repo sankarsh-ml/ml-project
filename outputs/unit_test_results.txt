@@ -1,0 +1,20 @@
+test_alternating_eclipse_depths_raise_odd_even_significance (test_transit_features.TransitFeaturesTest.test_alternating_eclipse_depths_raise_odd_even_significance) ... ok
+test_overlapping_transit_windows_are_rejected (test_transit_features.TransitFeaturesTest.test_overlapping_transit_windows_are_rejected) ... ok
+test_secondary_eclipse_is_detected (test_transit_features.TransitFeaturesTest.test_secondary_eclipse_is_detected) ... ok
+test_v_shape_differs_from_flat_bottom (test_transit_features.TransitFeaturesTest.test_v_shape_differs_from_flat_bottom) ... ok
+test_actual_frozen_assignment_is_star_disjoint (test_pipeline.PipelineTests.test_actual_frozen_assignment_is_star_disjoint) ... ok
+test_blind_bls_recovers_known_period (test_pipeline.PipelineTests.test_blind_bls_recovers_known_period) ... ok
+test_catalog_association_uses_bjd_conversion_and_rejects_wrong_phase (test_pipeline.PipelineTests.test_catalog_association_uses_bjd_conversion_and_rejects_wrong_phase) ... ok
+test_centroid_shift_flags_blended_signal (test_pipeline.PipelineTests.test_centroid_shift_flags_blended_signal) ... ok
+test_epoch_projection_uses_catalog_period_over_many_years (test_pipeline.PipelineTests.test_epoch_projection_uses_catalog_period_over_many_years) ... ok
+test_grouped_cv_keeps_repeated_stars_together (test_pipeline.PipelineTests.test_grouped_cv_keeps_repeated_stars_together) ... ok
+test_model_inputs_exclude_catalog_labels_and_identifiers (test_pipeline.PipelineTests.test_model_inputs_exclude_catalog_labels_and_identifiers) ... ok
+test_selector_accepts_new_manual_ids_and_filters_known_records (test_pipeline.PipelineTests.test_selector_accepts_new_manual_ids_and_filters_known_records) ... ok
+test_training_refuses_an_already_open_independent_protocol (test_pipeline.PipelineTests.test_training_refuses_an_already_open_independent_protocol) ... ok
+test_transit_preserving_detrend_with_gap (test_pipeline.PipelineTests.test_transit_preserving_detrend_with_gap) ... ok
+test_weak_signals_fail_predeclared_gate (test_pipeline.PipelineTests.test_weak_signals_fail_predeclared_gate) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 1.386s
+
+OK

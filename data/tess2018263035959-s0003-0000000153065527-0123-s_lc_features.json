@@ -1,0 +1,41 @@
+{
+  "pipeline": {
+    "version": 3,
+    "feature_set": "transit_vetting_v1",
+    "cadence_seconds": 120,
+    "window_length": 1501,
+    "min_period": 0.6,
+    "max_period": 10.0,
+    "period_grid": 6000,
+    "search_bin_minutes": 10,
+    "refinement_points": 400,
+    "durations_days": [
+      0.025,
+      0.04,
+      0.06,
+      0.09,
+      0.13,
+      0.18,
+      0.25,
+      0.32
+    ]
+  },
+  "features": {
+    "period_days": 6.582983313068767,
+    "duration_days": 0.09,
+    "depth": 0.001903236579638211,
+    "flux_std": 0.002079529694218772,
+    "duty_cycle": 0.013671612963278955,
+    "tic_id": "153065527",
+    "sector": 3,
+    "epoch_btjd": 1388.5738177785483,
+    "observed_transits": 2,
+    "source_file": "tess2018263035959-s0003-0000000153065527-0123-s_lc.fits",
+    "transit_snr": 10.375557763257753,
+    "odd_even_significance": 1e-06,
+    "secondary_ratio": 1e-06,
+    "shape_ratio": 1.1829658604999878,
+    "depth_scatter_ratio": 0.04854062546085784,
+    "red_noise_ratio": 1.2883386906918506
+  }
+}

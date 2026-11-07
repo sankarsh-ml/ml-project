@@ -1,0 +1,30 @@
+{
+  "frozen_utc": "2026-11-07T17:02:55.266025+00:00",
+  "model_sha256": "db4772f2a0a46546e0887d2251d975e580e7861ffd6961786925e80582c59375",
+  "training_features_sha256": "43e45d02fd5bdbf7d701047c03a1c58111e29843956f3496d28bbb97c0cb5dbb",
+  "processing_code_sha256": "a51b8e50a70ff410611dd958af7b1ddbe4e3b4de3c649d0b7874f5a1635938e2",
+  "split_plan_sha256": "43ccb1f92c1a5f9292c002d4bb7d152bdfcda6d6f8b04531ee9a03ffe3188383",
+  "pipeline": {
+    "version": 4,
+    "feature_set": "flux_centroid_stellar_v1",
+    "cadence_seconds": 120,
+    "window_days": 2.0,
+    "min_period": 0.6,
+    "max_period": 10.0,
+    "frequency_grid": 20000,
+    "search_bin_minutes": 8,
+    "peak_count": 4,
+    "max_duty_cycle": 0.15,
+    "mask_width": 1.7,
+    "durations_days": [
+      0.025,
+      0.04,
+      0.06,
+      0.09,
+      0.13,
+      0.18,
+      0.25,
+      0.35
+    ]
+  }
+}

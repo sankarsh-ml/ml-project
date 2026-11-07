@@ -1,0 +1,4 @@
+-r requirements-svm.txt
+lightkurve==2.6.0
+matplotlib>=3.8
+requests>=2.31
