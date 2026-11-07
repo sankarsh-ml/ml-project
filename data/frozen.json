@@ -1,0 +1,14 @@
+{
+  "model_sha256": "b43e1b9af0e5c6fd159eedafebfc35bf04a09cdd0b1bb809ef70cb258c820830",
+  "training_sha256": "55dcc3ee23be54e763af664d9603cd315b3dff47a6dd1e6f2d074d83358f15ff",
+  "split_sha256": "e40fd00de9ff68074eed4db387555b8ef15e1a9604b808aaee447ade59f93790",
+  "plan_sha256": "8cc9cec6fdc02e5ccb9632232af355ea0f7b1fd6420b647b70c15d527b6e0380",
+  "catalog_sha256": "a7072b5167c47e7dfb08cd74f5325ca438ab389b445eb04818c9e6fcfdf259ac",
+  "code": {
+    "classifier.py": "fa445407b6fd59e7e91f4a80ba120c91f96d5f4e74a9340f731251d9da89d497",
+    "search_pipeline.py": "660ab2ad42d3fe647b0d6e6c493e806033b329564ed9c310df95395c636877c1",
+    "transit_features.py": "4e9e6a353aa1270812a214a1d68f4b5dd22b8590049a5da100b3726fedd37420",
+    "tess_pipeline.py": "77956368ab7bb7d41c7975d0b407d725eea398a1879b86f53f3adab7a92a87d3",
+    "train_real_tess.py": "b02c5bd619722b8ccf44c2ff03993465caaec76c65f8472bfff0f2e19f8148a5"
+  }
+}

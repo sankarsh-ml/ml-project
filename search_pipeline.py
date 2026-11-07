@@ -5,9 +5,9 @@ from astropy.io import fits
 from astropy.timeseries import BoxLeastSquares
 from scipy.signal import savgol_filter, find_peaks
 
-from transit_features import mad, phase_time, vetting_features, centroid_features, stellar_features
+from transit_features import mad, phase_time, vetting_features
 
-CONFIG = {"version": 4, "feature_set": "flux_centroid_stellar_v1", "cadence_seconds": 120,
+CONFIG = {"version": 1, "feature_set": "brightness_only_16", "cadence_seconds": 120,
           "window_days": 2.0, "min_period": .6, "max_period": 10.0,
           "frequency_grid": 20000, "search_bin_minutes": 8, "peak_count": 4,
           "max_duty_cycle": .15, "mask_width": 1.7,
@@ -37,15 +37,8 @@ def read_curve(path):
         cadence = float(np.nanmedian(np.diff(time[valid])))*86400
         if not 110 <= cadence <= 130:
             raise ValueError("This model requires TESS two-minute cadence data.")
-        centroids = []
-        for axis in [1, 2]:
-            name, correction = f"MOM_CENTR{axis}", f"POS_CORR{axis}"
-            values = np.asarray(table[name], dtype=float) if name in table.names else np.full(len(time), np.nan)
-            if correction in table.names:
-                values = values - np.asarray(table[correction], dtype=float)
-            centroids.append(values[valid])
         scale = np.median(flux[valid])
-        return time[valid], flux[valid]/scale, error[valid]/scale, centroids, header
+        return time[valid], flux[valid]/scale, error[valid]/scale, header
 
 
 def detrend(time, flux, exclude=None):
@@ -135,17 +128,49 @@ def search(time, flux, error, progress):
     return refined, result
 
 
-def analyze(path, progress=lambda message: None, cached_detection=None):
-    # cached_detection is accepted for API compatibility but never reuses v3 fits.
-    progress("Reading quality-filtered PDCSAP flux and centroid motion...")
-    time, raw, error, centroids, header = read_curve(path)
+def bootstrap_uncertainty(time, flux, error, period, epoch, duration, repeats=20, progress=lambda _: None):
+    """Residual block bootstrap, conditional on the chosen BLS period alias.
+
+    Keep observation times fixed; resample one-hour residual blocks to retain
+    short-term noise correlation, then refit the nearby period/duration grid.
+    This does not include alternative aliases or detrending systematics.
+    """
+    if repeats <= 0:
+        return {}
+    progress(f"Estimating measurement uncertainty with {repeats} resampled light curves...")
+    t, y, e = bin_curve(time, flux, error, 8)
+    model = BoxLeastSquares(t, y, e).model(t, period, duration, epoch)
+    residual = y-model
+    residual -= np.median(residual)
+    rng = np.random.default_rng(714)
+    block = max(2, int(round((1/24)/np.median(np.diff(t)))))
+    periods = np.linspace(max(CONFIG["min_period"], period*.99),
+                          min(CONFIG["max_period"], np.ptp(time)/2, period*1.01), 121)
+    durations = np.unique(np.clip(duration*np.linspace(.6, 1.4, 9), .015, period*.15))
+    draws = []
+    for _ in range(repeats):
+        starts = rng.integers(0, len(t), size=int(np.ceil(len(t)/block)))
+        indices = ((starts[:, None]+np.arange(block)) % len(t)).ravel()[:len(t)]
+        power = BoxLeastSquares(t, model+residual[indices], e).power(
+            periods, durations, objective="snr", oversample=10)
+        i = int(np.argmax(power.power))
+        draws.append([float(power.period[i]), float(power.duration[i]), float(power.depth[i])])
+    draws = np.asarray(draws)
+    return {"resamples": repeats, "block_minutes": 60,
+            "scope": "Local residual bootstrap; fixed detrending and selected period alias.",
+            "std": dict(zip(["period_days", "duration_days", "depth"], np.std(draws, axis=0, ddof=1))),
+            "interval_68": dict(zip(["period_days", "duration_days", "depth"], np.quantile(draws, [.16, .84], axis=0).T.tolist()))}
+
+
+def analyze(path, progress=lambda message: None, n_bootstraps=20):
+    progress("Reading quality-filtered PDCSAP brightness...")
+    time, raw, error, header = read_curve(path)
     flat, trend = detrend(time, raw)
     noise = max(mad(np.diff(flat))/np.sqrt(2), 1e-8)
     error = np.where(np.isfinite(error) & (error > 0), error, noise)
     # Protect downward dips; remove isolated upper excursions relative to trend.
     use = (flat-1) < 8*max(mad(flat), noise)
     time, raw, error = time[use], raw[use], error[use]
-    centroids = [value[use] for value in centroids]
     flat = flat[use]
     error = error/np.maximum(trend[use], 1e-8)
     progress("Searching periodic dips on a uniform-frequency BLS grid...")
@@ -171,15 +196,14 @@ def analyze(path, progress=lambda message: None, cached_detection=None):
                 "flux_std": float(np.std(flat)), "duty_cycle": duration/period,
                 "bls_snr": float(refined.depth_snr[i]),
                 "sde": (best["snr"]-float(np.median(coarse.power)))/max(mad(coarse.power), 1e-8),
-                "peak_ratio": best["snr"]/max(candidates[1]["snr"], 1e-8) if len(candidates) > 1 else 1.0}
+                }
     features.update(vetting_features(time, flat, period, epoch, duration, depth))
-    features.update(centroid_features(time, centroids, phase, duration))
-    features.update(stellar_features(header, period, duration, depth))
     if features["observed_transits"] < 2:
         raise ValueError("Fewer than two sampled transit windows.")
     features.update({"tic_id": str(header["TICID"]), "sector": int(header["SECTOR"]),
                      "epoch_btjd": epoch, "source_file": Path(path).name})
     order = np.argsort(coarse.period)
-    return {"features": features, "time": time, "flux": flat, "phase": phase,
+    uncertainty = bootstrap_uncertainty(time, flat, corrected_error, period, epoch, duration, n_bootstraps, progress)
+    return {"features": features, "uncertainty": uncertainty, "time": time, "flux": flat, "phase": phase,
             "period_grid": np.asarray(coarse.period)[order], "power": np.asarray(coarse.power)[order],
             "candidate_peaks": candidates, "trend": trend}

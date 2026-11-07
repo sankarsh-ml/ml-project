@@ -14,7 +14,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from matplotlib.figure import Figure
 
 from tess_pipeline import ROOT, CONFIG, analyze, download_tic
-from svm_classifier import predict
+from classifier import predict, MODEL_PATH
 from search_pipeline import detection_accepted
 from target_selector import TargetIndex, SearchableTIC, parse_tic, EXAMPLES
 
@@ -31,7 +31,7 @@ class Explorer(tk.Tk):
         self.events = queue.Queue()
         self.result = None
         self.busy = False
-        self.model_path = ROOT / "svm_model.joblib"
+        self.model_path = MODEL_PATH
         self.report = {}
         if (ROOT / "training_report.json").exists():
             self.report = json.loads((ROOT / "training_report.json").read_text())
@@ -54,7 +54,7 @@ class Explorer(tk.Tk):
                  font=("Segoe UI", 12, "bold")).pack(anchor="w")
         tk.Label(header, text="Find the signal in starlight.", bg=BG, fg=TEXT,
                  font=("Segoe UI", 25, "bold")).pack(anchor="w")
-        tk.Label(header, text="On-demand archive analysis  /  Two-minute TESS light curves  /  BLS + signal classifier",
+        tk.Label(header, text="On-demand archive analysis  /  Two-minute TESS light curves  /  BLS + Random Forest",
                  bg=BG, fg=MUTED, font=("Segoe UI", 10)).pack(anchor="w", pady=(4, 0))
 
         body = tk.Frame(self, bg=BG)
@@ -193,7 +193,7 @@ class Explorer(tk.Tk):
         if self.busy:
             return
         if not self.model_path.exists():
-            messagebox.showerror("Model missing", "Run python train_real_tess.py --sectors 1 2 3 first.")
+            messagebox.showerror("Model missing", "Run python train_real_tess.py --stage fit first.")
             return
         self.busy = True
         for button in [self.analyze_button, self.file_button, self.example_button, self.export_button]:
@@ -222,6 +222,9 @@ class Explorer(tk.Tk):
                 else:
                     result["prediction"] = pd.DataFrame([{**result["features"],
                         "planet_candidate_probability": np.nan, "predicted_label": -1, "probability_reliable": False}])
+                result["prediction"]["probability_reliable"] &= self.report.get("probability_reliable", False)
+                for name, value in result.get("uncertainty", {}).get("std", {}).items():
+                    result["prediction"][name+"_bootstrap_std"] = value
                 outside = sum(
                     result["features"][name] < minimum or result["features"][name] > artifact["feature_max"][name]
                     for name, minimum in artifact.get("feature_min", {}).items())
@@ -273,6 +276,9 @@ class Explorer(tk.Tk):
         if result.get("outside_training_range"):
             uncertain += " · Outside training feature range"
         self.detail.set(f"TIC {f['tic_id']} · Sector {f['sector']} · {f['observed_transits']} sampled transit windows\n{membership}{uncertain}. Experimental model; follow-up is required.")
+        uncertainty = result.get("uncertainty", {}).get("std", {})
+        if uncertainty:
+            self.detail.set(self.detail.get()+f"\nBootstrap scatter: P {uncertainty['period_days']:.5f} d; duration {uncertainty['duration_days']*24:.3f} h; depth {uncertainty['depth']*1e6:.0f} ppm (local fit only).")
         probability_text = f"{probability:.1%}" if bool(row.probability_reliable) and not result.get("outside_training_range") else "Not validated"
         for variable, value in zip(self.values, [f"{f['period_days']:.4f}",
                 f"{f['duration_days']*24:.2f}", f"{f['depth']*1e6:,.0f}", probability_text]):

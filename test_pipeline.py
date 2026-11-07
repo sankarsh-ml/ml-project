@@ -4,15 +4,27 @@ from pathlib import Path
 import unittest
 import numpy as np
 import pandas as pd
-from search_pipeline import detrend, search, detection_accepted
-from transit_features import centroid_features, phase_time, FEATURES
-from training_workflow import match_ephemeris
-from model_selection import feature_matrix, grouped_folds, train as fit_model
+from search_pipeline import detrend, search, detection_accepted, bootstrap_uncertainty
+from transit_features import phase_time, FEATURES
+from train_real_tess import match_ephemeris, fit
+from classifier import feature_matrix, grouped_folds
 from target_selector import TargetIndex, parse_tic
-from experiment import RUN_DIR
+RUN_DIR = Path(__file__).resolve().parent / "data"
 
 
 class PipelineTests(unittest.TestCase):
+    def test_resampling_reports_real_measurement_variation(self):
+        t = np.arange(0, 15, 2/1440)
+        transit = np.abs(phase_time(t, 2.713, .37)) < .06
+        rng = np.random.default_rng(31)
+        low = 1-.008*transit+rng.normal(0, .0001, len(t))
+        high = 1-.008*transit+rng.normal(0, .003, len(t))
+        a = bootstrap_uncertainty(t, low, np.full(len(t), .0001), 2.713, .37, .12, 8)
+        b = bootstrap_uncertainty(t, high, np.full(len(t), .003), 2.713, .37, .12, 8)
+        self.assertGreater(b["std"]["depth"], a["std"]["depth"])
+        self.assertEqual(b["resamples"], 8)
+        self.assertTrue(all(np.isfinite(list(b["std"].values()))))
+
     def test_transit_preserving_detrend_with_gap(self):
         t = np.arange(0, 20, 2/1440)
         t = t[(t < 8) | (t > 8.7)]
@@ -35,25 +47,15 @@ class PipelineTests(unittest.TestCase):
         catalog = {"pl_orbper": 3., "pl_tranmid": 2458325., "pl_trandurh": 2.,
                    "pl_orbpererr1": 1e-6, "pl_tranmiderr1": .001}
         feature = {"period_days": 3., "epoch_btjd": 1325.}
-        self.assertTrue(match_ephemeris(feature, catalog)["catalog_match"])
-        self.assertTrue(match_ephemeris({**feature, "period_days": 1.5}, catalog)["catalog_match"])
-        self.assertFalse(match_ephemeris({**feature, "epoch_btjd": 1326.}, catalog)["catalog_match"])
-
-    def test_centroid_shift_flags_blended_signal(self):
-        t = np.arange(0, 15, 2/1440)
-        phase = phase_time(t, 2.4, .3)
-        noise = np.random.default_rng(4).normal(0, .0001, len(t))
-        shifted = noise+.002*(np.abs(phase) < .06)
-        strong = centroid_features(t, [shifted, noise], phase, .12)
-        weak = centroid_features(t, [noise, noise], phase, .12)
-        self.assertGreater(strong["centroid_significance"], weak["centroid_significance"]+20)
+        self.assertTrue(match_ephemeris(feature, catalog))
+        self.assertTrue(match_ephemeris({**feature, "period_days": 1.5}, catalog))
+        self.assertFalse(match_ephemeris({**feature, "epoch_btjd": 1326.}, catalog))
 
     def test_actual_frozen_assignment_is_star_disjoint(self):
-        plan = json.loads((RUN_DIR / "split_plan.json").read_text())
+        plan = json.loads((RUN_DIR / "split.json").read_text())
         train, test = set(plan["train_tic_ids"]), set(plan["test_tic_ids"])
         self.assertFalse(train & test)
-        self.assertFalse(test & set(plan["legacy_seen_tic_ids"]))
-        self.assertFalse(train & set(plan["quarantined_development_tic_ids"]))
+        self.assertFalse(test & set(plan["previously_used_tic_ids"]))
 
     def test_model_inputs_exclude_catalog_labels_and_identifiers(self):
         row = {name: 1. for name in FEATURES}
@@ -86,7 +88,7 @@ class PipelineTests(unittest.TestCase):
         # A 0.03% one-sector period error accumulates ~0.9 d over 1000 cycles.
         # The real transit at BTJD 1325 must still match the catalog ephemeris.
         for period, epoch in [(3.0009, 1325.), (1.50045, 1325.), (6.0018, 1328.)]:
-            self.assertTrue(match_ephemeris({"period_days": period, "epoch_btjd": epoch}, catalog)["catalog_match"])
+            self.assertTrue(match_ephemeris({"period_days": period, "epoch_btjd": epoch}, catalog))
 
     def test_weak_signals_fail_predeclared_gate(self):
         f = {"bls_snr": 4., "pink_snr": 2., "observed_transits": 3, "event_fraction": .8}
@@ -97,7 +99,7 @@ class PipelineTests(unittest.TestCase):
         if not (RUN_DIR / "evaluation_lock.json").exists():
             self.skipTest("The protocol has not been opened yet.")
         with self.assertRaisesRegex(RuntimeError, "independent test is already open"):
-            fit_model(pd.DataFrame(), "outputs/forbidden_retrain.joblib")
+            fit()
 
 
 if __name__ == "__main__":

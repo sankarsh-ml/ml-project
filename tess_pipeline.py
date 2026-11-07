@@ -3,7 +3,6 @@ from pathlib import Path
 import re
 import uuid
 
-import numpy as np
 import pandas as pd
 import requests
 
@@ -40,6 +39,9 @@ def download_tic(tic_id, sector=1, filename=None):
     if tic <= 0:
         raise ValueError("Enter a positive numeric TIC ID.")
     if filename is None:
+        cached = sorted((DATA / "lightcurves").glob(f"tess*-s{int(sector):04d}-{tic:016d}-*_lc.fits"))
+        if cached:
+            return cached[-1]
         found = manifest(sector)
         found = found[found.tic_id == tic]
         if found.empty:

@@ -29,6 +29,11 @@ def main():
                 assert app.verdict.get() in ["Planet-like candidate", "False-positive-like signal"]
                 assert "accuracy" not in app.detail.get().lower()
                 assert "35%" not in app.detail.get()
+                assert app.result["uncertainty"]["resamples"] == 20
+                assert "Bootstrap scatter" in app.detail.get()
+                assert "period_days_bootstrap_std" in app.result["prediction"]
+                if not app.report.get("probability_reliable"):
+                    assert app.values[3].get() == "Not validated"
                 (ROOT / "outputs").mkdir(exist_ok=True)
                 app.save_result(ROOT / "outputs/demo_prediction.csv")
                 assert len(app.axes[0].collections) >= 2

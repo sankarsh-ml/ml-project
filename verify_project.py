@@ -1,56 +1,44 @@
-"""Check the saved real-data model and export its held-out evaluation plot."""
+"""Verify frozen data/model, reproduce test predictions, and plot evaluation."""
 import json
-import hashlib
-import joblib
 import numpy as np
 import pandas as pd
 from matplotlib.figure import Figure
-from sklearn.metrics import ConfusionMatrixDisplay, PrecisionRecallDisplay
-
-from tess_pipeline import ROOT, CONFIG
-from svm_classifier import predict
-from experiment import RUN_DIR
+from sklearn.metrics import ConfusionMatrixDisplay
+from classifier import predict, metrics
+from tess_pipeline import ROOT, DATA
+from train_real_tess import check_frozen, sha
 
 
 def main():
+    check_frozen()
     report = json.loads((ROOT / "training_report.json").read_text())
-    artifact = joblib.load(ROOT / "svm_model.joblib")
-    assert artifact["pipeline"] == CONFIG, "Pipeline mismatch"
-    assert not set(report["train_tic_ids"]) & set(report["test_tic_ids"]), "Star leakage"
-    rows = pd.read_csv(RUN_DIR / "independent_test_labeled.csv", dtype={"tic_id": str})
-    plan = json.loads((RUN_DIR / "split_plan.json").read_text())
-    frozen = json.loads((RUN_DIR / "frozen_model.json").read_text())
-    assert not set(report["test_tic_ids"]) & set(plan["legacy_seen_tic_ids"])
-    assert not set(report["train_tic_ids"]) & set(plan["quarantined_development_tic_ids"])
-    assert hashlib.sha256((RUN_DIR / "frozen_model.joblib").read_bytes()).hexdigest() == frozen["model_sha256"]
-    assert hashlib.sha256((RUN_DIR / "independent_test_labeled.csv").read_bytes()).hexdigest() == report["independent_evaluation"]["test_features_sha256"]
-    test = pd.DataFrame(report["test_predictions"])
-    aligned = test.merge(rows, on=["tic_id", "sector"], suffixes=("_report", ""), validate="one_to_one")
-    assert len(aligned) == report["test_rows"], "Missing held-out rows"
-    result = predict(aligned, ROOT / "svm_model.joblib")
-    np.testing.assert_allclose(result.planet_candidate_probability, aligned.probability, atol=1e-12)
-    np.testing.assert_array_equal(result.predicted_label, aligned.prediction)
-    from svm_classifier import predict as infer
-    frozen_result = infer(aligned, RUN_DIR / "frozen_model.joblib")
-    np.testing.assert_allclose(result.planet_candidate_probability, frozen_result.planet_candidate_probability, atol=1e-12)
-    assert aligned.catalog_match.all()
-    for filename in aligned.source_file:
-        with (ROOT / "data/lightcurves" / filename).open("rb") as handle:
-            assert handle.read(6) == b"SIMPLE", "Missing real FITS data"
-    output = ROOT / "outputs"
-    output.mkdir(exist_ok=True)
-    test.to_csv(output / "held_out_predictions.csv", index=False)
-    figure = Figure(figsize=(10, 4), layout="constrained")
-    axes = figure.subplots(1, 2)
-    ConfusionMatrixDisplay.from_predictions(aligned.label, aligned.prediction,
-        labels=[0, 1], display_labels=["False positive", "Planet"], ax=axes[0], colorbar=False)
-    PrecisionRecallDisplay.from_predictions(aligned.label, aligned.probability, ax=axes[1])
-    axes[0].set_title(f"Independent new stars (n={len(aligned)})")
-    axes[1].set_title(f"{report['selected_model']} · untouched test opened once")
-    figure.suptitle("Real TESS · recovered catalog signals only")
-    figure.savefig(output / "evaluation.png", dpi=160)
-    print("PASS: real FITS provenance, frozen model/test hashes, new disjoint stars, no legacy holdout fitting, and prediction reproducibility.")
-    print("Saved outputs/evaluation.png and outputs/held_out_predictions.csv")
+    split = json.loads((DATA / "split.json").read_text())
+    test = pd.read_csv(DATA / "test_features.csv", dtype={"tic_id": str})
+    saved = pd.read_csv(ROOT / "outputs/test_predictions.csv", dtype={"tic_id": str})
+    assert not set(test.tic_id) & set(split["train_tic_ids"]+split["previously_used_tic_ids"])
+    assert sha(DATA / "test_features.csv") == report["test_features_sha256"]
+    assert test.catalog_match.all() and test.detection_accepted.all()
+    result = predict(test)
+    np.testing.assert_array_equal(test.tic_id, saved.tic_id)
+    np.testing.assert_allclose(result.planet_candidate_probability, saved.probability, atol=1e-12)
+    np.testing.assert_array_equal(result.predicted_label, saved.prediction)
+    actual = metrics(test.label, result.planet_candidate_probability)
+    for key in ["accuracy", "balanced_accuracy", "confusion_matrix_labels_0_1"]:
+        assert actual[key] == report[key]
+    # Raw observations are optional after cloning, but check provenance whenever
+    # present. The retained tables and frozen hashes suffice to reproduce scores.
+    for row in test.itertuples():
+        path = DATA / "lightcurves" / row.source_file
+        if path.exists():
+            assert sha(path) == row.fits_sha256
+    figure = Figure(figsize=(6, 4), layout="constrained")
+    ax = figure.subplots()
+    ConfusionMatrixDisplay.from_predictions(test.label, result.predicted_label, labels=[0, 1],
+        display_labels=["False positive", "Planet-like"], ax=ax, colorbar=False)
+    ax.set_title(f"New real TESS stars (n={len(test)})\nRandom Forest: accuracy {actual['accuracy']:.1%}")
+    figure.savefig(ROOT / "outputs/evaluation.png", dpi=160)
+    print("PASS: frozen code/model/data, disjoint new stars, real-FITS hashes, and reproduced independent predictions.")
+    print(f"Accuracy {actual['accuracy']:.2%}; balanced accuracy {actual['balanced_accuracy']:.2%}")
 
 
 if __name__ == "__main__":

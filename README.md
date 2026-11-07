@@ -1,220 +1,94 @@
 # TESS Planet Explorer
 
-Local dark-themed desktop app for real TESS two-minute light curves. Enter a TIC
-ID, choose a sector, and inspect a blind BLS transit search plus an experimental
-planet-like / false-positive-like classifier. It does not confirm a planet.
+A small desktop project following the original abstract: download real TESS brightness data, clean and detrend it, find repeating dips with Box Least Squares (BLS), classify the signal with a Random Forest, estimate measurement uncertainty by resampling, and plot the result.
 
-## GitHub checkout and large files
+The simplified model achieved **70.37% accuracy and 70.37% balanced accuracy** on 54 accepted signals from 60 newly reserved stars. This is a measured result for this sample, not a guarantee for future stars. The 95% Wilson interval for accuracy is **57.17–80.86%**.
 
-Saved `.joblib` models use Git LFS. Install Git LFS, run `git lfs install`, and
-clone normally; for an existing checkout, run `git lfs pull` to fetch the models.
-Downloaded FITS observations, cached sector-download manifests, Python caches,
-temporary files, and runtime logs are excluded by `.gitignore`.
+## Run
 
-The interface downloads a requested observation on demand. To restore the raw
-observations assigned to the final protocol before running raw-FITS provenance
-checks, run `python prefetch_data.py`. Dataset plans, extracted features, frozen
-models, reports, plots, and historical results are versioned. `FILE_MANIFEST.csv`
-also records the original local download inventory; its FITS entries describe
-reproducible external data rather than files stored in the Git repository.
+Use Python 3.11 with Tkinter. Install Git LFS before pulling the model:
 
-## Run the interface
-
-Double-click `launch_app.bat`, or run `python app.py`. Use `python app.py --demo`
-to analyze a cached example on startup. Type into the TIC dropdown to filter
-saved/catalog targets; use Up/Down and Enter to select. You may enter any numeric
-TIC ID manually. Known catalog status and available sectors are shown as metadata.
-Sector suggestions update after selection. The dropdown includes example targets
-and an editable sector control. Internet is needed only for uncached data.
-
-The main interface shows the individual signal classification, estimated calibrated
-probability when calibration checks support displaying it, period, duration, depth,
-and light-curve/BLS plots. Aggregate evaluation statistics are kept in this README,
-the optional evaluation dialog, and `training_report.json`. Weak periodic detections
-show no forced binary classification. CSV and PNG export are available.
-
-## Independent measured result
-
-The **Extra Trees** was selected using training data only. On
-**150 entirely new TIC IDs**, opened once after the model and
-threshold were frozen:
-
-| Metric | Independent result |
-|---|---:|
-| Accuracy | 84.00% |
-| Balanced accuracy | 84.00% |
-| Planet precision | 84.21% |
-| Planet recall | 84.21% |
-| Planet F1 | 0.842 |
-| False-positive recall | 83.78% |
-| Accuracy Wilson 95% interval | 77.3%–89.0% |
-
-Confusion matrix, rows=true and columns=predicted, order `[false positive, planet]`:
-
-```text
-[[62, 12], [12, 64]]
+```powershell
+git lfs install
+git lfs pull
+python -m pip install -r requirements.txt
+python app.py
 ```
 
-The 70% accuracy target was **met**
-by this one independent evaluation. This measures classification of recovered
-catalog signals, not accuracy across arbitrary TESS stars or survey discovery
-completeness. Per-target predictions are in `outputs/independent_test_predictions.csv`.
+Or double-click `launch_app.bat` after installing dependencies. `python app.py --demo` analyzes a convenient example.
 
-## Dataset, labels, and leakage prevention
+Choose or type a TIC ID, select a sector, and click **Analyze TIC**. The searchable dropdown includes catalog dispositions and known sectors, accepts new IDs, and supports arrows and Enter. You can also open a local TESS SPOC two-minute FITS file. Downloads run in the background; this is on-demand analysis of archived observations, not a live telescope feed.
 
-- 800 distinct targets were assigned before extraction,
-  spanning available two-minute SPOC products in sectors 1–55.
-- Training: 600 assigned stars,
-  446 matched/gated stars used: 209
-  vetted false positives and 237 confirmed/known planets.
-- Independent test: 200 assigned new stars,
-  150 matched/gated stars evaluated. Class counts are
-  {'0': 74, '1': 76} (0=false positive, 1=planet).
-- One observation per TIC is used. No TIC appears in both training and test.
-  All 155 old development and superseded
-  test TICs are quarantined from fitting and selection. Every final test TIC is
-  absent from all 815 previously assigned/attempted targets.
-- Labels come from a saved NASA Exoplanet Archive TOI snapshot: CP/KP positives,
-  FP negatives. PC, APC, FA, and uncatalogued stars are not relabeled as either
-  class. Only a uniquely eligible catalog signal per TIC is used in this benchmark.
-- Each search is blind. Catalog period/epoch are used afterward for association,
-  never as classifier inputs or search guides. Association allows 0.5/1/2 period
-  aliases, a tight period tolerance, and a BJD-to-BTJD epoch check with propagated
-  catalog ephemeris uncertainties and a capped timing tolerance. Epoch projection
-  uses the catalog period, not the noisier fitted period from one sector.
-- The predeclared detection gate requires BLS SNR >= 6, pink SNR >= 3, at least two
-  sampled transit windows, and >=40% of sampled events with local depth SNR >2.
-  Unmatched and weak signals are recorded, not assigned fabricated negative labels.
-- `data/v5/split_plan.json` fixes IDs before feature extraction. New test FITS files
-  were downloaded in advance but not feature-extracted until fitting and selection
-  were complete. `frozen_model.json` records model, code, split, and training-feature
-  hashes. `evaluation_lock.json` prevents silently evaluating/reselecting again.
+The dark interface shows a planet-like or false-positive-like verdict, period, duration, depth, bootstrap scatter, and brightness/folded-transit/BLS plots. Weak detections return “Insufficient periodic signal.” Export saves a CSV and matching PNG. A candidate is never presented as a confirmed planet.
 
-The assigned-to-accepted coverage is 446/600
-for training and 150/200 for test.
-Classification accuracy is conditional on that recovery/gating step. These losses
-must be included when discussing end-to-end transit-finding performance. Counting
-only correct labeled classifications over all reserved targets gives
-63.0%; this is an operational
-yield, not the classifier's conditional accuracy. The majority-class accuracy
-baseline on the classified test subset is 50.7%.
+## How the code works
 
-## Preprocessing, period recovery, and features
+1. **Download and clean:** `tess_pipeline.py` downloads official SPOC FITS data from the public TESS mirror, with an STScI fallback. Cached observations work offline. `search_pipeline.py` reads PDCSAP flux, removes nonfinite/flagged points, verifies two-minute cadence, normalizes brightness, and removes slow trends separately across gaps. Dips are excluded from trend fitting.
+2. **Find the transit:** BLS searches 0.6–10 days, limited to half the observation baseline. It refines the strongest peaks and half/double-period alternatives, masks transit windows, detrends again, and measures period, epoch, duration, and depth on the original cadence. A fixed signal-quality gate requires multiple sampled events.
+3. **Classify:** `transit_features.py` derives 16 brightness-only inputs: period, duration, depth, flux scatter, duty cycle, transit SNR, odd/even difference, secondary eclipse ratio, transit shape, event depth scatter, red-noise ratio, event count, pink-noise SNR, BLS SNR, detection efficiency, and event consistency. `classifier.py` fits one class-balanced Random Forest. There is no SVM layer, stellar-metadata model, or model-family competition.
+4. **Estimate confidence:** sigmoid calibration uses training folds. The model produces a calibrated score, but its independent calibration is not established: this test has only 54 accepted signals and calibration error is 0.127. The interface therefore displays **Not validated** for numerical probability. Raw scores remain in exports and evaluation tables; they are not physical planet-confirmation probabilities.
+5. **Resample:** 20 residual block-bootstrap fits estimate scatter and 16th–84th percentile intervals for period, duration, and depth. Observation times stay fixed, and one-hour residual blocks preserve some short-term noise correlation. Fits use eight-minute bins and a local BLS grid. These estimates are conditional on the chosen period alias and fixed detrending; they exclude alias uncertainty and preprocessing systematics. Grid resolution can limit very small uncertainties.
 
-Quality flags and finite PDCSAP flux are checked. A broad, iteratively clipped
-Savitzky–Golay trend is fitted separately across observing gaps, preserving
-downward transits. Upper excursions are removed. A uniform-frequency 20,000-point
-BLS search covers 0.6–10 days (also limited by baseline), using an eight-minute
-binned search copy. Competing peaks and half/double-period aliases are refined.
-Very broad dips exceeding 15% duty cycle are excluded. The selected transit and
-secondary windows are masked for a second detrending pass, followed by a final
-fit on the original two-minute samples. Every inference uses this same pipeline.
+`app.py` connects these functions to the Tkinter interface. `target_selector.py` provides the searchable selector. `train_real_tess.py` contains catalog association, training, freezing, and evaluation in one script.
 
-The classifier uses flux-based period, duration, depth, duty cycle, SNR/SDE, peak
-competition, odd/even differences, secondary-eclipse strength, event depth
-consistency, shape/ingress, noise and red-noise statistics. Centroid diagnostics
-measure in-transit motion after removing slow pointing variations. FITS stellar
-radius/log(g)/temperature, crowding, and flux fraction support an inferred
-companion-radius proxy and duration/density consistency check. These are
-approximate vetting diagnostics, not fitted physical planet parameters.
+The implementations use [Astropy BLS](https://docs.astropy.org/en/stable/timeseries/bls.html), [scikit-learn Random Forest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html), and the [NASA Exoplanet Archive TOI catalog definitions](https://exoplanetarchive.ipac.caltech.edu/docs/API_TOI_columns.html).
 
-The training period audit compared 42 observations also present in the
-old pilot using the same current catalog ephemerides; 2 formerly unmatched
-periods now associate correctly and 0 previously matched associations
-were lost. See `outputs/period_recovery_audit.csv`.
-237 accepted training planets matched the full catalog period; the
-false-positive training set includes 9 half-period and 2
-double-period eclipse aliases.
+## Real-data evaluation
 
-## Training-only model comparison
+Training uses **446 distinct stars**: 237 CP/KP planet labels and 209 FP labels. Another **60 previously unused stars** were reserved before fitting, with 30 catalog stars per class. The frozen model accepted 54 ephemeris-matched signals, evenly split between the classes. The resulting labeled dataset contains **500 stars**.
 
-| Model | Grouped grid-CV balanced accuracy (mean ± SD) | Calibrated training OOF balanced accuracy | Minimum class recall |
-|---|---:|---:|---:|
-| SVM | 87.4% ± 5.0% | 85.3% | 83.7% |
-| Random Forest | 85.8% ± 5.4% | 85.7% | 82.3% |
-| Extra Trees | 86.7% ± 4.1% | 87.3% | 84.2% |
-| Gradient Boosting | 88.1% ± 5.5% | 86.9% | 81.8% |
-| Logistic baseline | 83.3% ± 4.0% | 81.8% | 77.0% |
+The data span multiple TESS sectors from 1–55; this implementation does **not** claim to have trained on 2,000 observations from one sector. The TOI snapshot contains 8,151 rows. Only CP/KP and explicit FP dispositions supply labels; unresolved candidates and unlisted stars are not treated as negatives. Catalog period and epoch are used only to match the blind detection to its label, including half/double-period aliases. They never enter the classifier.
 
-These are **selection estimates**, not independent results: hyperparameters and
-thresholds were chosen using training data. Five grouped folds tune hyperparameters;
-separate outer/inner grouped folds generate sigmoid-calibrated training OOF scores
-and choose a stable, near-optimal balanced-accuracy threshold. Imputation, scaling,
-and transforms are fitted inside each fold. Selection rewards balanced accuracy,
-penalizes fold variability, and requires useful recall for both classes where
-feasible. SVM is preferred only within 0.01 of the best selection score.
+| Independent test metric | Result |
+| --- | ---: |
+| Accuracy | 70.37% |
+| Balanced accuracy | 70.37% |
+| Planet precision | 67.74% |
+| Planet recall | 77.78% |
+| Planet F1 | 72.41% |
+| False-positive recall | 62.96% |
+| Majority-class baseline | 50.00% |
 
-Selected model parameters: `{'classifier__max_features': 0.5, 'classifier__min_samples_leaf': 2}`. Decision threshold:
-`0.500`. The frozen model is evaluated without refitting on test
-stars. `svm_model.joblib` and `models/best_model.joblib` contain the selected model;
-`models/svm_candidate.joblib` preserves the SVM candidate.
+Confusion matrix, rows = true class and columns = predicted class, ordered `[false positive, planet-like]`:
 
-Training calibration ECE (five bins): 0.034.
-Independent calibration ECE: 0.045;
-Brier score: 0.109. Probability display is
-**enabled** based on predeclared
-training and independent calibration checks. Scores refer to this sampled catalog
-population; class priors, magnitude selection, stellar metadata errors, other
-sectors, blends, noise, and new instrument behavior can affect transfer.
+```text
+[[17, 10],
+ [ 6, 21]]
+```
 
-## Historical results, retained in full
+Six reserved observations were unmatched or weak and were excluded by the predeclared gate/ephemeris association, rather than forced into a class. Classification coverage is **54/60 = 90%**; correct classifications across all reserved observations are **38/60 = 63.33%**. The 70.37% score applies to recovered catalog signals, not the entire target list or a blind stellar survey. This benchmark also does not measure rejection of arbitrary pure noise.
 
-| Historical development model | Accuracy | Balanced accuracy | Planet F1 |
-|---|---:|---:|---:|
-| Initial five-feature baseline (all predictions positive) | 70.0% | 50.0% | 0.824 |
-| Revised five-feature development model | 35.0% | 34.5% | 0.435 |
-| Previous 11-feature model | 35.0% | 48.8% | 0.235 |
+Five grouped training folds select among six Random Forest configurations by balanced accuracy. The chosen forest has 300 trees, minimum leaf size 10, and all 16 features available at each split. Its training CV balanced accuracy was 77.94%; calibrated training out-of-fold balanced accuracy was 75.80%. Hyperparameters were selected on those training data, so these are development estimates. The classification threshold stays fixed at 0.5. No TIC appears in training and test, and every prior evaluation target is excluded from the new test. No tuning followed this independent evaluation.
 
-The first result was misleading because it predicted every star positive. The
-later 35% results were development diagnostics on 20 observations/15 stars and
-were not untouched scientific tests. Full original files/model/report/data tables
-are in `history/2026-11-07_v3`; full historical evaluations are embedded in the new
-`training_report.json`. The old holdout was not used for the new comparison.
-
-The first expanded v4 run scored 84.09% on 88 classified new stars, but is
-**superseded**: a final training audit found that epoch projection used the noisy
-fitted period rather than the catalog period across years. After correction,
-101 additional training signals associated correctly. The entire 140-star v4
-test reservation was quarantined, not used to select the corrected classifier.
-Protocol v5 reserved 200 further untouched TICs, froze a new training-selected
-model, and opened that test once. The final result above is from those fresh
-stars. Full v4 evidence and the reason it was superseded are retained in
-`history/v4_pre_epoch_fix` and `training_report.json`.
+The earlier 84% Extra Trees result used additional centroid/stellar information and a different test set. It is superseded and is not the simplified Random Forest's result. Old source copies, notebooks, alternate models, caches, experiment archives, logs, and unused observations have been removed. A short previous-result record remains in the current report for context.
 
 ## Reproduce and test
 
 ```powershell
-python -m pip install -r requirements-tested.txt
-python -m unittest test_transit_features.py test_pipeline.py
+python -m unittest test_pipeline test_transit_features -v
 python verify_project.py
 python smoke_test_app.py
-python app.py --demo
 ```
 
-The scientific checks cover transit preservation across gaps, blind period
-recovery, BJD epoch association, eclipse/centroid diagnostics, and TIC leakage.
-The GUI smoke test runs the actual background worker, inference, plot rendering,
-selector manual-entry handling, sector suggestions, and CSV/PNG export.
+Verification checks frozen source/model/table hashes, star separation, original FITS hashes when downloads are present, and exact reproduction of saved test predictions. It writes `outputs/evaluation.png`. The GUI smoke test runs real FITS analysis, the worker queue, classification, all three plots, selector entry, and CSV/PNG export. All 15 unit tests and the end-to-end GUI test passed after cleanup.
 
-Training commands are intentionally staged:
+The included experiment is already evaluated and deliberately refuses retraining against this opened test. For a **new experiment**, use a separate project copy, reserve additional untouched TICs, update `data/observation_plan.csv` and `data/split.json`, and remove the generated `data/frozen.json` and `data/evaluation_lock.json` there. Never erase these safeguards to reuse the present test for tuning. If rebuilding features, regenerate `data/training_features.csv` before freezing:
 
 ```powershell
-python prepare_dataset.py
-python prepare_followup.py
-python prefetch_data.py
-python train_real_tess.py --stage extract --partition training --workers 8
+python train_real_tess.py --stage extract-training
 python train_real_tess.py --stage fit
-python train_real_tess.py --stage extract --partition independent_test --workers 8
-python train_real_tess.py --stage evaluate
+python train_real_tess.py --stage evaluate --workers 4
 ```
 
-The included split/test has already been opened. The final command and further
-fitting deliberately refuse to reuse it for model development. For a new study,
-preserve `data/v4` and `data/v5`, select additional untouched stars, and create a new protocol;
-do not remove a lock merely to keep optimizing this test score. Existing cached
-FITS files and configuration-tagged features are retained. No bootstrap uncertainty
-intervals or planet confirmation are claimed in this version.
+Keep the new training IDs consistent with the new split. These commands are the preparation sequence for an unopened experiment, not commands to rerun on the shipped evaluated split.
 
-Source references: [NASA TOI column definitions](https://exoplanetarchive.ipac.caltech.edu/docs/API_TOI_columns.html),
-[TESS FITS products](https://spacetelescope.github.io/mast_notebooks/notebooks/TESS/beginner_how_to_use_lc/beginner_how_to_use_lc.html),
-[scikit-learn calibration](https://scikit-learn.org/stable/modules/calibration.html).
+## Files retained
+
+- The Python source files, two focused unit-test files, GUI smoke test, and verification script.
+- `planet_model.joblib`: the single compressed Random Forest artifact, stored through Git LFS.
+- `training_report.json`: current training methodology, class counts, calibration, and independent metrics.
+- `data/`: catalog, sector index, one observation plan and split, training/test feature tables, provenance hashes, freeze record, evaluation lock, and test extraction/error records.
+- `outputs/`: current independent predictions, confusion plot, and one example CSV/PNG.
+- `requirements.txt`, launcher, `.gitignore`, and `.gitattributes`.
+
+Raw FITS files, regenerable sector manifests, Python caches, and logs are ignored by Git. Current training/test observations and cached examples remain locally; missing FITS files download on demand. Git retains earlier commits normally; obsolete files have been removed from the current project, without rewriting repository history.

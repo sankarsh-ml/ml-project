@@ -1,7 +1,9 @@
 # Preserve the exact bytes used by the frozen scientific SHA-256 checks.
 * -text
+# Treat preserved Windows line endings correctly during whitespace checks.
+* whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
 
-# Keep trained classifiers and frozen historical models outside normal Git blobs.
+# Store the trained classifier outside normal Git blobs.
 *.joblib filter=lfs diff=lfs merge=lfs -text
 *.pkl filter=lfs diff=lfs merge=lfs -text
 *.pickle filter=lfs diff=lfs merge=lfs -text

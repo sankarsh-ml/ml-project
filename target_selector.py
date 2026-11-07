@@ -36,10 +36,8 @@ class TargetIndex:
                 record = self.records.setdefault(tic, {"tic_id": tic, "statuses": set(), "sectors": set()})
                 record["statuses"].add(str(row.tfopwg_disp))
         sources = [(data / "sector_index.csv", "tic_id"),
-                   (data / "v4/available_observations.csv", "tic_id"),
-                   (data / "training_candidates.csv", "tic_id"),
-                   (data / "v4/observation_plan.csv", "tic_id")]
-        sources.append((data / "v5/observation_plan.csv", "tic_id"))
+                   (data / "observation_plan.csv", "tic_id"),
+                   (data / "training_features.csv", "tic_id")]
         for path, column in sources:
             if path.exists():
                 frame = pd.read_csv(path, usecols=lambda col: col in [column, "sector"], dtype={column: str})
@@ -218,21 +216,3 @@ class SearchableTIC(tk.Frame):
         self.on_select(tic)
         return "break"
 
-
-def build_sector_index():
-    """Index all catalog TICs against already-downloaded official manifests."""
-    catalog = pd.read_csv(ROOT / "data/toi_catalog_full.csv", usecols=["tid"])
-    ids = set(catalog.tid.astype(int))
-    rows = set()
-    pattern = re.compile(r"tess\d+-s(\d+)-(\d{16})-\d+-s_lc\.fits")
-    for path in (ROOT / "data").glob("sector*_download.sh"):
-        for sector, digits in pattern.findall(path.read_text()):
-            tic = int(digits)
-            if tic in ids:
-                rows.add((str(tic), int(sector)))
-    pd.DataFrame(sorted(rows), columns=["tic_id", "sector"]).to_csv(ROOT / "data/sector_index.csv", index=False)
-    print(f"Indexed {len(rows)} catalog TIC/sector pairs.")
-
-
-if __name__ == "__main__":
-    build_sector_index()
